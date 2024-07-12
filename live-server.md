@@ -1,0 +1,1 @@
+earthquake site(earthsite)→ffmpeg→Youtube Live
