@@ -1,12 +1,13 @@
 #!/bin/bash
 
 show_help() {
-  echo "Usage: ${0} [-s] [-i] [-r] [-h]"
+  echo "Usage: ${0} [-s] [-i] [-t] [-p] [-h]"
   echo ""
   echo "Options:"
   echo "  -s    Set up the environment"
   echo "  -i    Install the software"
-  echo "  -r    Remove the software"
+  echo "  -t    Start the software"
+  echo "  -p    Stop the software"
   echo "  -h    Show this help message"
 }
 
@@ -15,20 +16,27 @@ if [ $# -eq 0 ]; then
   exit 0
 fi
 
-while getopts "sirh" OPT
+while getopts "sitph" OPT
 do
   case $OPT in
     s)
       echo "[-s] が指定された: 環境を設定します"
       # 環境設定のコードをここに追加
+      ./managers/settings.sh
       ;;
     i)
       echo "[-i] が指定された: ソフトウェアをインストールします"
-      ./install.sh  # install.sh を実行
+      ./managers/install.sh  # install.sh を実行
       ;;
-    r)
-      echo "[-r] が指定された: ソフトウェアを削除します"
-      # 削除のコードをここに追加
+    t)
+      echo "[-t] が指定された: ソフトウェアを開始します"
+      # 開始のコードをここに追加
+      ./managers/start.sh
+      ;;
+    p)
+      echo "[-p] が指定された: ソフトウェアを停止します"
+      # 停止のコードをここに追加
+      ./managers/stop.sh
       ;;
     h)
       show_help

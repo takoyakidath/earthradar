@@ -22,3 +22,5 @@ sidebar{
 
 仮起動
 ```npm run dev```
+
+Port ```2025```

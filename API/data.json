@@ -1,0 +1,968 @@
+{
+  "feed": {
+    "$": {
+      "xmlns": "http://www.w3.org/2005/Atom",
+      "lang": "ja"
+    },
+    "title": [
+      "高頻度（地震火山）"
+    ],
+    "subtitle": [
+      "JMAXML publishing feed"
+    ],
+    "updated": [
+      "2024-07-13T14:01:05+09:00"
+    ],
+    "id": [
+      "https://www.data.jma.go.jp/developer/xml/feed/eqvol.xml#short_1720846865"
+    ],
+    "link": [
+      {
+        "$": {
+          "rel": "related",
+          "href": "https://www.jma.go.jp/"
+        }
+      },
+      {
+        "$": {
+          "rel": "self",
+          "href": "https://www.data.jma.go.jp/developer/xml/feed/eqvol.xml"
+        }
+      },
+      {
+        "$": {
+          "rel": "hub",
+          "href": "http://alert-hub.appspot.com/"
+        }
+      }
+    ],
+    "rights": [
+      {
+        "_": "\n<a href=\"https://www.jma.go.jp/jma/kishou/info/coment.html\">利用規約</a>,\n<a href=\"https://www.jma.go.jp/jma/en/copyright.html\">Terms of Use</a>\n",
+        "$": {
+          "type": "html"
+        }
+      }
+    ],
+    "entry": [
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713050043_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T05:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713050043_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　薩摩硫黄島　降灰予報（定時）】　現在、薩摩硫黄島は噴火警戒レベル２（火口周辺規制）です。薩摩硫黄島で噴火が発生した場合には、１３日２１時から２４時までは火口から北東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713050046_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T05:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713050046_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　口永良部島　降灰予報（定時）】　現在、口永良部島は噴火警戒レベル３（入山規制）です。口永良部島で噴火が発生した場合には、１３日２１時から２４時までは火口から北東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713050050_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T05:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713050050_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　諏訪之瀬島　降灰予報（定時）】　現在、諏訪之瀬島は噴火警戒レベル２（火口周辺規制）です。諏訪之瀬島で噴火が発生した場合には、１３日２１時から２４時までは火口から北方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713050031_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T05:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713050031_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　浅間山　降灰予報（定時）】　現在、浅間山は噴火警戒レベル２（火口周辺規制）です。浅間山で噴火が発生した場合には、１３日２１時から２４時までは火口から北方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713050035_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T05:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713050035_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　阿蘇山　降灰予報（定時）】　現在、阿蘇山は噴火警戒レベル２（火口周辺規制）です。阿蘇山で噴火が発生した場合には、１３日２１時から２４時までは火口から東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713050039_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T05:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713050039_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　桜島　降灰予報（定時）】　現在、桜島は噴火警戒レベル３（入山規制）です。桜島で噴火が発生した場合には、１３日２１時から２４時までは火口から北東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "震源・震度に関する情報"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713045732_0_VXSE53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T04:57:32Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713045732_0_VXSE53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【震源・震度情報】１３日１３時５４分ころ、地震がありました。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "震源・震度に関する情報"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713033034_0_VXSE53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T03:30:34Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713033034_0_VXSE53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【震源・震度情報】１３日１２時２７分ころ、地震がありました。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713020045_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T02:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713020045_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　口永良部島　降灰予報（定時）】　現在、口永良部島は噴火警戒レベル３（入山規制）です。口永良部島で噴火が発生した場合には、１３日２１時から２４時までは火口から北東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713020049_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T02:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713020049_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　諏訪之瀬島　降灰予報（定時）】　現在、諏訪之瀬島は噴火警戒レベル２（火口周辺規制）です。諏訪之瀬島で噴火が発生した場合には、１３日２１時から２４時までは火口から北方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713020034_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T02:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713020034_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　阿蘇山　降灰予報（定時）】　現在、阿蘇山は噴火警戒レベル２（火口周辺規制）です。阿蘇山で噴火が発生した場合には、１３日２１時から２４時までは火口から東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713020038_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T02:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713020038_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　桜島　降灰予報（定時）】　現在、桜島は噴火警戒レベル３（入山規制）です。桜島で噴火が発生した場合には、１３日２１時から２４時までは火口から北東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713020042_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T02:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713020042_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　薩摩硫黄島　降灰予報（定時）】　現在、薩摩硫黄島は噴火警戒レベル２（火口周辺規制）です。薩摩硫黄島で噴火が発生した場合には、１３日２１時から２４時までは火口から北東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240713020030_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-13T02:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240713020030_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　浅間山　降灰予報（定時）】　現在、浅間山は噴火警戒レベル２（火口周辺規制）です。浅間山で噴火が発生した場合には、１３日２１時から２４時までは火口から北方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "震源・震度に関する情報"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712232249_0_VXSE53_270000.xml"
+        ],
+        "updated": [
+          "2024-07-12T23:22:49Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712232249_0_VXSE53_270000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【震源・震度情報】１３日０８時１９分ころ、地震がありました。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712230045_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-12T23:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712230045_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　口永良部島　降灰予報（定時）】　現在、口永良部島は噴火警戒レベル３（入山規制）です。口永良部島で噴火が発生した場合には、１３日０９時から１２時までは火口から北東方向、１３日２１時から２４時までは火口から北東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712230049_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-12T23:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712230049_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　諏訪之瀬島　降灰予報（定時）】　現在、諏訪之瀬島は噴火警戒レベル２（火口周辺規制）です。諏訪之瀬島で噴火が発生した場合には、１３日０９時から１２時までは火口から北東方向、１３日２１時から２４時までは火口から北方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712230034_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-12T23:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712230034_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　阿蘇山　降灰予報（定時）】　現在、阿蘇山は噴火警戒レベル２（火口周辺規制）です。阿蘇山で噴火が発生した場合には、１３日０９時から１２時までは火口から北東方向、１３日２１時から２４時までは火口から東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712230038_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-12T23:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712230038_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　桜島　降灰予報（定時）】　現在、桜島は噴火警戒レベル３（入山規制）です。桜島で噴火が発生した場合には、１３日０９時から１２時までは火口から北東方向、１３日２１時から２４時までは火口から北東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712230042_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-12T23:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712230042_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　薩摩硫黄島　降灰予報（定時）】　現在、薩摩硫黄島は噴火警戒レベル２（火口周辺規制）です。薩摩硫黄島で噴火が発生した場合には、１３日０９時から１２時までは火口から北東方向、１３日２１時から２４時までは火口から北方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712230030_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-12T23:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712230030_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　浅間山　降灰予報（定時）】　現在、浅間山は噴火警戒レベル２（火口周辺規制）です。浅間山で噴火が発生した場合には、１３日０９時から１２時までは火口から北東方向、１３日２１時から２４時までは火口から北方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712200049_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-12T20:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712200049_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　諏訪之瀬島　降灰予報（定時）】　現在、諏訪之瀬島は噴火警戒レベル２（火口周辺規制）です。諏訪之瀬島で噴火が発生した場合には、１３日０９時から１２時までは火口から北東方向、１３日２１時から２４時までは火口から北方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712200038_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-12T20:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712200038_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　桜島　降灰予報（定時）】　現在、桜島は噴火警戒レベル３（入山規制）です。桜島で噴火が発生した場合には、１３日０９時から１２時までは火口から東方向、１３日２１時から２４時までは火口から北東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712200042_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-12T20:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712200042_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　薩摩硫黄島　降灰予報（定時）】　現在、薩摩硫黄島は噴火警戒レベル２（火口周辺規制）です。薩摩硫黄島で噴火が発生した場合には、１３日０９時から１２時までは火口から北東方向、１３日２１時から２４時までは火口から北方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712200046_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-12T20:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712200046_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　口永良部島　降灰予報（定時）】　現在、口永良部島は噴火警戒レベル３（入山規制）です。口永良部島で噴火が発生した場合には、１３日０９時から１２時までは火口から北東方向、１３日２１時から２４時までは火口から北東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712200030_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-12T20:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712200030_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　浅間山　降灰予報（定時）】　現在、浅間山は噴火警戒レベル２（火口周辺規制）です。浅間山で噴火が発生した場合には、１３日０９時から１２時までは火口から北東方向、１３日２１時から２４時までは火口から北方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      },
+      {
+        "title": [
+          "降灰予報（定時）"
+        ],
+        "id": [
+          "https://www.data.jma.go.jp/developer/xml/data/20240712200034_0_VFVO53_010000.xml"
+        ],
+        "updated": [
+          "2024-07-12T20:00:00Z"
+        ],
+        "author": [
+          {
+            "name": [
+              "気象庁"
+            ]
+          }
+        ],
+        "link": [
+          {
+            "$": {
+              "type": "application/xml",
+              "href": "https://www.data.jma.go.jp/developer/xml/data/20240712200034_0_VFVO53_010000.xml"
+            }
+          }
+        ],
+        "content": [
+          {
+            "_": "【火山名　阿蘇山　降灰予報（定時）】　現在、阿蘇山は噴火警戒レベル２（火口周辺規制）です。阿蘇山で噴火が発生した場合には、１３日０９時から１２時までは火口から北東方向、１３日２１時から２４時までは火口から東方向に降灰が予想されます。",
+            "$": {
+              "type": "text"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
