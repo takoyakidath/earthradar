@@ -20,6 +20,11 @@ sidebar{
     天気
     時間
 }
+status{
+    youtube
+    APIサーバー
+    
+}
 
 仮起動
 ```npm run dev```
