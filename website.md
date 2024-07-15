@@ -22,8 +22,11 @@ sidebar{
 }
 status{
     youtube
-    APIサーバー
+    APIサーバー(JMA P2P)
     
+    受信する時はreCAPTCHAをしてapiを受信する
+    クールダウンを追加する　30分
+    30分間上のボックスに入れる
 }
 
 仮起動
