@@ -1,7 +1,9 @@
 export function Footer() {
-    return (
+  return (
+    <div>
       <main>
-<h1> CopyRight 2024 </h1>
+        <h1> Copyright © 2024 Takoyaki. All rights reserved.</h1>
       </main>
-    );
-  }
+    </div>
+  );
+}

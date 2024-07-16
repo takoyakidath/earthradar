@@ -1,9 +1,12 @@
 import { Footer } from "@/components/Footer";
+
 export default function Home() {
   return (
-    <main>
-<h1> This is Index</h1>
-<Footer />
-    </main>
+    <div>
+      <main>
+        This is EarthQuake
+      </main>
+      <Footer />
+    </div>
   );
 }
