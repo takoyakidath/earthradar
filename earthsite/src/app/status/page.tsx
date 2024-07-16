@@ -15,11 +15,15 @@ export default function Home() {
 
     if (ApiTime) {
       alert("受信しました。!");
+      getapi();
     } else {
       alert("しばらくしてからもう一度お試しください。");
     }
   }
-
+function getapi(){
+//apiに受信しに行く
+console.log("reception!!")
+}
   return (
     <div>
       <main>
