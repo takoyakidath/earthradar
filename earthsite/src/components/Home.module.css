@@ -1,0 +1,27 @@
+.button {
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative; /* This is necessary to position the line absolutely */
+  }
+  
+  .button::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px; /* Set the thickness of the line */
+    background-color: black; /* Set the color of the line */
+    position: absolute;
+    bottom: -2px; /* Position the line below the button */
+    left: 0;
+  }
+  
+  .button:hover {
+    color: white;
+    background-color: black; /* Adjust the background color for better visibility */
+  }
+  .button:hover::after {
+    background-color: white; /* Change the color of the line on hover */
+  }
