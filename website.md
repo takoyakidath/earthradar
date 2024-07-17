@@ -21,8 +21,8 @@ sidebar{
     時間
 }
 status{
-        p2pAPI-v1-earthquake{""}
-        jma-wether("")
+        p2pAPI-v1-earthquake("https://api.p2pquake.net/v2/ws")
+        jma-wether("https://www.jma.go.jp/bosai/forecast/data/forecast/130000.json")
     
         1.「受信」を押したとき30分のタイマーをスタートさせる
         ※30分間は受信ボタンを表示させない

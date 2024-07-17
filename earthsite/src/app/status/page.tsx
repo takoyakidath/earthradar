@@ -15,14 +15,32 @@ export default function Home() {
 
     if (ApiTime) {
       alert("受信しました。!");
-      getapi();
+      getData()
     } else {
       alert("しばらくしてからもう一度お試しください。");
     }
   }
-function getapi(){
+async function getData(){
 //apiに受信しに行く
-console.log("reception!!")
+const APIP2P = new WebSocket('wss://api.p2pquake.net/v2/ws');
+
+APIP2P.onopen = function(event) {
+  console.log("OK");
+  const ExportP2P ="OK"
+};
+
+APIP2P.onclose = function(event) {
+  console.log('Code:', event.code);
+};
+
+
+const APIJMA = await fetch("https://www.jma.go.jp/bosai/forecast/data/forecast/130000.json")
+if (APIJMA.ok) {
+  console.log("OK")
+  const ExportJma = "OK"
+}else {
+  console.log(APIJMA.status);
+}
 }
   return (
     <div>
@@ -40,3 +58,7 @@ console.log("reception!!")
     </div>
   );
 }
+function io(arg0: { autoConnect: boolean; }) {
+  throw new Error("Function not implemented.");
+}
+
