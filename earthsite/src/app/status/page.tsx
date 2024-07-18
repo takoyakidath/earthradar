@@ -11,7 +11,7 @@ export default function Home() {
         <Reception />
         <br />
         <Link href="/">
-          <button className={classes.button}>Go to Page</button>
+          <button className={classes.button}>Go to Home</button>
         </Link>
       </main>
       <Footer />

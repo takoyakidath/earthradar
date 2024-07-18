@@ -1,13 +1,55 @@
+import * as dotenv from 'dotenv'
+dotenv.config()
 import classes from "@/components/classes.module.css";
-import { useState } from 'react'; // useStateフックをインポートして状態管理を行う
+import { useState, useEffect } from 'react';
+import env from "@/config.js";
+
+const { password } = env;
 export function Reception() {
           // APIのステータスを保持するための状態変数
-          const [exportJma, setExportJma] = useState(null);
-          const [exportP2P, setExportP2P] = useState(null);
+          const [exportJma, setExportJma] = useState(() => {
+            const savedJma = localStorage.getItem('exportJma');
+            return savedJma ? JSON.parse(savedJma) : null;
+          });
         
+          const [exportP2P, setExportP2P] = useState(() => {
+            const savedP2P = localStorage.getItem('exportP2P');
+            return savedP2P ? JSON.parse(savedP2P) : null;
+          });
+          const [exportTime, setexportTime] = useState(() => {
+            const savedTime = localStorage.getItem('exportTime');
+            return savedTime ? JSON.parse(savedTime) : null;
+          });
+        
+          useEffect(() => {
+            localStorage.setItem('exportJma', JSON.stringify(exportJma));
+          }, [exportJma]);
+        
+          useEffect(() => {
+            localStorage.setItem('exportP2P', JSON.stringify(exportP2P));
+          }, [exportP2P]);
+          useEffect(() => {
+            localStorage.setItem('exportTime', JSON.stringify(exportTime));
+          }, [exportTime]);
+
     function reception() {
-        alert("受信しました。!");
-        getData()
+        const pass =prompt("パスワードを入力してください","");
+        console.log(pass)
+        console.log(password)
+        if(pass === password){
+            alert("受信しました。!");
+            getData()
+            getTime()
+        }else{
+            alert("パスワードが違います")
+        }
+      }
+      async function getTime(){
+        const now = new Date();
+        const jpTime = now.toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+        console.log('日本時間:', jpTime);        
+        setexportTime(jpTime)
+
       }
     async function getData(){
     //apiに受信しに行く
@@ -43,6 +85,7 @@ export function Reception() {
           <br />
           JMA-API {exportJma}<br />
           P2P-API {exportP2P}<br />
+          取得時間　{exportTime}<br />
           </code> 
           <button className={classes.button} onClick={reception}>
           受信
