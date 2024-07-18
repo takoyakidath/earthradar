@@ -84,7 +84,7 @@ export function Reception() {
           取得時間　{exportTime}
           <br />
         </code>
-        P2P-APIが1001になるのは仕様です　気にしないでください！
+        P2P-APIが1001になるのは仕様です　気にしないでください！<br />
         <button className={classes.button} onClick={reception}>
           受信
         </button>
