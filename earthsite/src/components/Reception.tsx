@@ -1,7 +1,7 @@
-require('dotenv').config();
+require("dotenv").config();
 import classes from "@/components/classes.module.css";
 import { useState, useEffect } from "react";
-import nextConfig from '../../next.config.mjs';
+import nextConfig from "../../next.config.mjs";
 
 export function Reception() {
   // APIのステータスを保持するための状態変数
@@ -31,20 +31,14 @@ export function Reception() {
   }, [exportTime]);
 
   function reception() {
-
     const pass = prompt("パスワードを入力してください", "");
-    console.log(pass);
-    const password = "ado";
-    console.log(password); // これで "ado" と表示されるはずです
-    
-    if (pass === password) {
-        alert("受信しました。!");
-        getData();
-        getTime();
-      } else {
-        alert("パスワードが違います");
-      }
-
+    if (pass === process.env.password) {
+      alert("受信しました。!");
+      getData();
+      getTime();
+    } else {
+      alert("パスワードが違います");
+    }
   }
   async function getTime() {
     const now = new Date();
@@ -90,6 +84,7 @@ export function Reception() {
           取得時間　{exportTime}
           <br />
         </code>
+        P2P-APIが1001になるのは仕様です　気にしないでください！
         <button className={classes.button} onClick={reception}>
           受信
         </button>
