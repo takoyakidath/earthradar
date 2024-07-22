@@ -51,24 +51,24 @@ export function Reception() {
     const APIP2P = new WebSocket("wss://api.p2pquake.net/v2/ws");
 
     APIP2P.onopen = function (event) {
-      console.log("OK");
-      setExportP2P("OK"); // 接続成功時に状態を更新
+      console.log("🟢OK");
+      setExportP2P("🟢OK"); // 接続成功時に状態を更新
     };
 
     APIP2P.onclose = function (event) {
-      console.log("Code:", event.code);
-      setExportP2P(event.code); // 終了時に状態を更新
+      console.log("🔴"+event.code);
+      setExportP2P("🔴"+event.code); // 終了時に状態を更新
     };
 
     const APIJMA = await fetch(
       "https://www.jma.go.jp/bosai/forecast/data/forecast/130000.json"
     );
     if (APIJMA.ok) {
-      console.log("OK");
-      setExportJma("OK");
+      console.log("🟢OK");
+      setExportJma("🟢OK");
     } else {
-      console.log(APIJMA.status);
-      setExportJma(APIJMA.status);
+      console.log("🔴"+APIJMA.status);
+      setExportJma("🔴"+APIJMA.status);
     }
   }
 
