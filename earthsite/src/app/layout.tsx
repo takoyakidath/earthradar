@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
+import localfont from "@next/font/local";
 
-const inter = Inter({ subsets: ["latin"] });
+const LTInstitute = localfont({
+  src: "../fonts/LTInstitute.otf",
+  variable: "--LTInstitute", //css変数名を定義する必要がある。
+ });
 
 export const metadata: Metadata = {
   title: " EarthQuake ",
@@ -16,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={LTInstitute.className}>{children}</body>
     </html>
   );
 }

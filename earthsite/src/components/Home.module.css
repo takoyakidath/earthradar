@@ -1,5 +1,5 @@
 .button {
-    color: black;
+    color: gray;
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -12,16 +12,37 @@
     display: block;
     width: 100%;
     height: 2px; /* Set the thickness of the line */
-    background-color: black; /* Set the color of the line */
+    background-color: gray; /* Set the color of the line */
     position: absolute;
     bottom: -2px; /* Position the line below the button */
     left: 0;
   }
   
   .button:hover {
-    color: white;
-    background-color: black; /* Adjust the background color for better visibility */
+    color: black;
   }
   .button:hover::after {
-    background-color: white; /* Change the color of the line on hover */
+    background-color: black; /* Change the color of the line on hover */
+  }
+  .sidebar{
+    width: 500px;
+    height: 100dvh;
+    box-sizing: border-box;
+    background-color: gray
+  }
+
+  .container{
+    color: black;
+    background-color: white;
+    height: 100dvh;
+    font-size: 24px;
+    
+  }
+  .main{
+    box-sizing: border-box;
+    background-color: greenyellow;
+  }
+  .Header{
+    font-size: 30px;
+    font-family: var(--LTInstitute);
   }
