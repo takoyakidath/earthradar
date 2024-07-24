@@ -20,21 +20,21 @@ while getopts "sitph" OPT
 do
   case $OPT in
     s)
-      echo "[-s] が指定された: 環境を設定します"
+      echo "[-s] が指定されました: 環境を設定します"
       # 環境設定のコードをここに追加
       ./managers/settings.sh
       ;;
     i)
-      echo "[-i] が指定された: ソフトウェアをインストールします"
+      echo "[-i] が指定されました: ソフトウェアをインストールします"
       ./managers/install.sh  # install.sh を実行
       ;;
     t)
-      echo "[-t] が指定された: ソフトウェアを開始します"
+      echo "[-t] が指定されました: ソフトウェアを開始します"
       # 開始のコードをここに追加
       ./managers/start.sh
       ;;
     p)
-      echo "[-p] が指定された: ソフトウェアを停止します"
+      echo "[-p] が指定されました: ソフトウェアを停止します"
       # 停止のコードをここに追加
       ./managers/stop.sh
       ;;

@@ -18,7 +18,3 @@ export default function Home() {
     </div>
   );
 }
-function io(arg0: { autoConnect: boolean; }) {
-  throw new Error("Function not implemented.");
-}
-
