@@ -3,6 +3,9 @@ import Link from "next/link";
 import classes from "@/components/Home.module.css";
 
 export default function Home() {
+    const now = new Date();
+    const jpTime = now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
+    console.log("日本時間:", jpTime);
   return (
     <div className={classes.container}>
       <div className={classes.sidebar}>
@@ -13,6 +16,12 @@ export default function Home() {
           </li>
           <li>
             <div>Latest Earthquake</div>
+            <ul>
+              <li>震度</li>
+              <li>震源地 </li>
+              <li>時間</li>
+              {/* 日本語フォントを対応させる */}
+            </ul>
           </li>
           <li>
             <div>Warning/advisory</div>
@@ -25,9 +34,18 @@ export default function Home() {
           </li>
         </ul>
       </div>
-
       <div className={classes.main}>
-        <div className={classes.main}>Last data EarthQuake Map</div>
+        <ul>
+          <li>
+            {" "}
+            <div className={classes.time}>{jpTime}</div>
+            {/*リロードしないと時刻が更新されないため修正する */}
+          </li>
+          <li>
+            {" "}
+            <div className={classes.main}>Last data EarthQuake Map</div>
+          </li>
+        </ul>
         <Footer />
       </div>
     </div>

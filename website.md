@@ -11,6 +11,9 @@ main{
     震度
 
 }
+時間{
+    
+}
 sidebar{
     地震の履歴(
         震度
@@ -18,7 +21,6 @@ sidebar{
         時間
     )
     天気
-    時間
 }
 status{
         p2pAPI-v1-earthquake("https://api.p2pquake.net/v2/ws")

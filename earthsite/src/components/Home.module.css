@@ -25,10 +25,11 @@
     background-color: black; /* Change the color of the line on hover */
   }
   .sidebar{
-    width: 500px;
+    width: 400px;
     height: 100dvh;
     box-sizing: border-box;
-    background-color: gray
+    background-color: gray;
+    padding-left: 7px;
   }
 
   .container{
@@ -36,13 +37,16 @@
     background-color: white;
     height: 100dvh;
     font-size: 24px;
-    
-  }
-  .main{
-    box-sizing: border-box;
-    background-color: greenyellow;
+    display:flex
   }
   .Header{
     font-size: 30px;
     font-family: var(--LTInstitute);
   }
+  .main{
+    box-sizing: border-box;
+  }
+.Footer{
+  display:flex;
+  align-items:flex-end;
+}
