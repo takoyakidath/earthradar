@@ -3,10 +3,13 @@ import Link from "next/link";
 import classes from "@/components/Home.module.css";
 
 export default function Home() {
+  function updateTime() {
     const now = new Date();
     const jpTime = now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
-    console.log("日本時間:", jpTime);
-    
+}
+
+setInterval(updateTime, 1000);
+
   return (
     <div className={classes.container}>
       <div className={classes.sidebar}>
