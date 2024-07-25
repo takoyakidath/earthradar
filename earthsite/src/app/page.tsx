@@ -1,11 +1,10 @@
 import { Footer } from "@/components/Footer";
 import Link from "next/link";
 import classes from "@/components/Home.module.css";
-
 export default function Home() {
   function updateTime() {
     const now = new Date();
-    const jpTime = now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
+    jpTime = now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
 }
 
 setInterval(updateTime, 1000);
