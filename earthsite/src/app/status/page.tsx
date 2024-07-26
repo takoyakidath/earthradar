@@ -1,5 +1,4 @@
 "use client";
-import { Footer } from "@/components/Footer";
 import { Reception } from "@/components/Reception";
 import Link from "next/link";
 import classes from "@/components/classes.module.css";
@@ -14,7 +13,7 @@ export default function Home() {
           <button className={classes.button}>Go to Home</button>
         </Link>
       </main>
-      <Footer />
+      <h1> Copyright © 2024 Takoyaki. All rights reserved.</h1>
     </div>
   );
 }
