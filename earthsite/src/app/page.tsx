@@ -2,13 +2,13 @@ import { Footer } from "@/components/Footer";
 import Link from "next/link";
 import classes from "@/components/Home.module.css";
 export default function Home() {
+  let jpTime; // グローバル変数として宣言
+
   function updateTime() {
-    const now = new Date();
-    jpTime = now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
-}
-
-setInterval(updateTime, 1000);
-
+      const now = new Date();
+      let jpTime = now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
+  }
+setInterval(updateTime, 500);
   return (
     <div className={classes.container}>
       <div className={classes.sidebar}>
