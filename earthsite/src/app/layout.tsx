@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import localfont from "@next/font/local";
+import localfont from "next/font/local";
 
 const LTInstitute = localfont({
   src: "../fonts/LTInstitute.otf",
