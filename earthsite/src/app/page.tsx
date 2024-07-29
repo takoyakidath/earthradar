@@ -16,15 +16,15 @@ export default function Home() {
 
   return (
     <div className={classes.container}>
-      <div className={classes.sidebar}>
+      <div className={classes.sidebarleft}>
         <div className={`${classes.Title}`}>EarthQuake Live</div>
         <ul>
           <li>
             <div>
               Wether <br />
               <ul>
-                <li>temp</li>
-                <li>svg</li>
+                <li>・temp</li>
+                <li>・svg</li>
               </ul>
             </div>
           </li>
@@ -54,11 +54,6 @@ export default function Home() {
         <ul>
           <li>
             {" "}
-            <div className={classes.time}>{jpTime}</div>
-            {/*リロードしないと時刻が更新されないため修正する */}
-          </li>
-          <li>
-            {" "}
             <div className={classes.main}>Last data EarthQuake Map</div>
           </li>
         </ul>
@@ -66,6 +61,9 @@ export default function Home() {
           {" "}
           Copyright © 2024 Takoyaki. All rights reserved.
         </div>
+      </div>
+      <div className={classes.sidebaright}>
+            <div className={classes.time}>{jpTime}</div>
       </div>
     </div>
   );

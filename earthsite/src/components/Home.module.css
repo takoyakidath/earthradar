@@ -24,7 +24,7 @@
   .button:hover::after {
     background-color: black; /* Change the color of the line on hover */
   }
-  .sidebar{
+  .sidebarleft{
     width: 400px;
     height: 100dvh;
     box-sizing: border-box;
@@ -53,5 +53,15 @@
 }
 .time{
   padding: 10px 20px;
-  
+  background-color: gray;
+  border-radius: 30px;
+}
+.sidebaright{
+  width: 400px;
+  height: 100dvh;
+  box-sizing: border-box;
+  padding-left: 7px;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
