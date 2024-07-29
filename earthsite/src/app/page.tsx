@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import classes from "@/components/Home.module.css";
 import axios from "axios";
+const { WebSocket } = require('ws')
 
 export default function Home() {
   const [jpTime, setJpTime] = useState("");
@@ -13,6 +14,19 @@ export default function Home() {
     }, 1000);
     return () => clearInterval(intervalId);
   }, []);
+
+
+
+
+  const [warning, setWarning] = useState("");
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      let warning = "b"
+      setWarning(warning);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, []); // 空の依存配列を渡すことで、マウント時とアンマウント時にのみ実行される
 
   return (
     <div className={classes.container}>
@@ -40,7 +54,10 @@ export default function Home() {
             </div>
           </li>
           <li>
-            <div>Warning/advisory</div>
+            <div>
+              Warning/advisory <br />
+              {warning}
+            </div>
           </li>
           <li>
             {" "}
@@ -63,7 +80,7 @@ export default function Home() {
         </div>
       </div>
       <div className={classes.sidebaright}>
-            <div className={classes.time}>{jpTime}</div>
+        <div className={classes.time}>{jpTime}</div>
       </div>
     </div>
   );
