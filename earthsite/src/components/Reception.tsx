@@ -70,6 +70,8 @@ export function Reception() {
       console.log("🔴"+APIJMA.status);
       setExportJma("🔴"+APIJMA.status);
     }
+
+    
   }
 
   return (

@@ -14,7 +14,9 @@
     "dotenv": "^16.4.5",
     "next": "14.2.5",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "socket.io-client": "^4.7.5",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/node": "^20",
