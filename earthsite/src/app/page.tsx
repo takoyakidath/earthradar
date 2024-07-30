@@ -3,31 +3,21 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import classes from "@/components/Home.module.css";
 import axios from "axios";
-import { io } from 'socket.io-client';
+import { io } from "socket.io-client";
 
 
 export default function Home() {
-  const socket = io('https://api-realtime-sandbox.p2pquake.net', {
-    path: '/v2/socket.io'  // エンドポイントのパスを指定
-  });
-  
-  socket.on('connect', () => {
-    console.log('Connected to server');
-    socket.emit('message', 'Hello, server!');
-  });
-  
-  socket.on('message', (data) => {
-    console.log('Message received:', data);
-  });
-  
-  socket.on('disconnect', () => {
-    console.log('Disconnected from server');
-  });
-  
-  socket.on('error', (error) => {
-    console.error('Error occurred:', error);
-  });
+  const socket = io("wss://api-realtime-sandbox.p2pquake.net/v2/history");
+// server-side
 
+// client-side
+socket.on("connect", () => {
+  console.log(socket.id); // x8WIv7-mJelg7on_ALbx
+});
+
+socket.on("disconnect", () => {
+  console.log(socket.id); // undefined
+});
   const [jpTime, setJpTime] = useState("");
   useEffect(() => {
     const intervalId = setInterval(() => {
