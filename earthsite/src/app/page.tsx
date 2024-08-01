@@ -3,21 +3,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import classes from "@/components/Home.module.css";
 import axios from "axios";
-import { io } from "socket.io-client";
-
 
 export default function Home() {
-  const socket = io("wss://api-realtime-sandbox.p2pquake.net/v2/history");
-// server-side
-
-// client-side
-socket.on("connect", () => {
-  console.log(socket.id); // x8WIv7-mJelg7on_ALbx
-});
-
-socket.on("disconnect", () => {
-  console.log(socket.id); // undefined
-});
   const [jpTime, setJpTime] = useState("");
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -27,16 +14,34 @@ socket.on("disconnect", () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const [warning, setWarning] = useState("");
+  const [Tsunami, setTsunami] = useState("");
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      let warning = "b"
-      setWarning(warning);
-    }, 1000);
+    const socket = new WebSocket(
+      "wss://api-realtime-sandbox.p2pquake.net/v2/ws"
+    );
+      socket.addEventListener("open", (event) => {
+        console.log("WebSocket is connected:", event);
+      });
 
-    return () => clearInterval(intervalId);
-  }, []); // 空の依存配列を渡すことで、マウント時とアンマウント時にのみ実行される
+      socket.addEventListener("message", (event) => {
+        let exportP2P = event.data;
+        setTsunami(exportP2P.domesticTsunami);
+        console.log(Tsunami);
+        console.log(exportP2P)
+      });
 
+      socket.addEventListener("close", (event) => {
+        console.log("WebSocket is closed:", event);
+      });
+
+      socket.addEventListener("error", (event) => {
+        console.error("WebSocket error observed:", event);
+      });
+
+      return () => {
+        socket.close();
+      };
+  });
   return (
     <div className={classes.container}>
       <div className={classes.sidebarleft}>
@@ -64,8 +69,8 @@ socket.on("disconnect", () => {
           </li>
           <li>
             <div>
-              Warning/advisory <br />
-              {warning}
+              Tsunami <br />
+              {Tsunami}
             </div>
           </li>
           <li>
