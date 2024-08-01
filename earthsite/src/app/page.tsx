@@ -26,6 +26,7 @@ export default function Home() {
       socket.addEventListener("message", (event) => {
         let exportP2P = event.data;
         setTsunami(exportP2P.domesticTsunami);
+        console.log(exportP2P)
         console.log(Tsunami);
         console.log(exportP2P)
       });
