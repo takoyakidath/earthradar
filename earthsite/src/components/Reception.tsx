@@ -1,7 +1,6 @@
 require("dotenv").config();
 import classes from "@/components/classes.module.css";
 import { useState, useEffect } from "react";
-import nextConfig from "../../next.config.mjs";
 
 export function Reception() {
   // APIのステータスを保持するための状態変数
@@ -30,17 +29,13 @@ export function Reception() {
     localStorage.setItem("exportTime", JSON.stringify(exportTime));
   }, [exportTime]);
 
-  function reception() {
-    const pass = prompt("パスワードを入力してください", "");
-    if (pass === process.env.password) {
+  async function reception() {
+
       alert("受信しました。!");
       getData();
       getTime();
-    } else {
-      alert("パスワードが違います");
-    }
   }
-  async function getTime() {
+  function getTime() {
     const now = new Date();
     const jpTime = now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
     console.log("日本時間:", jpTime);
@@ -93,4 +88,4 @@ export function Reception() {
       </main>
     </div>
   );
-}
+};

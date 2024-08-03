@@ -16,19 +16,22 @@ export default function Home() {
 
   const [Tsunami, setTsunami] = useState("");
   useEffect(() => {
-    const socket = new WebSocket(
-      "wss://api-realtime-sandbox.p2pquake.net/v2/ws"
-    );
+    const socket = new WebSocket("wss://api-realtime-sandbox.p2pquake.net/v2/ws");
       socket.addEventListener("open", (event) => {
         console.log("WebSocket is connected:", event);
       });
 
       socket.addEventListener("message", (event) => {
-        let exportP2P = event.data;
-        setTsunami(exportP2P.domesticTsunami);
-        console.log(exportP2P)
-        console.log(Tsunami);
-        console.log(exportP2P)
+        try {
+          const exportP2P = JSON.parse(event.data);
+          if (exportP2P.domesticTsunami) {
+            setTsunami(exportP2P.domesticTsunami);
+          } else {
+            console.log("No domesticTsunami field in message:", exportP2P);
+          }
+        } catch (error) {
+          console.error("Error parsing message data:", error);
+        }
       });
 
       socket.addEventListener("close", (event) => {
@@ -42,7 +45,7 @@ export default function Home() {
       return () => {
         socket.close();
       };
-  });
+  },[]);
   return (
     <div className={classes.container}>
       <div className={classes.sidebarleft}>
@@ -71,7 +74,7 @@ export default function Home() {
           <li>
             <div>
               Tsunami <br />
-              {Tsunami}
+              {Tsunami} <br />
             </div>
           </li>
           <li>
