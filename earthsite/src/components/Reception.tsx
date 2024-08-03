@@ -30,7 +30,6 @@ export function Reception() {
   }, [exportTime]);
 
   async function reception() {
-
       alert("受信しました。!");
       getData();
       getTime();
