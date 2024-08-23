@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import classes from "@/components/Home.module.css";
-import axios from "axios";
+
 
 export default function Home() {
   const [jpTime, setJpTime] = useState("");
@@ -28,6 +28,7 @@ export default function Home() {
             setTsunami(exportP2P.domesticTsunami);
           } else {
             console.log("No domesticTsunami field in message:", exportP2P);
+            setTsunami("Null")
           }
         } catch (error) {
           console.error("Error parsing message data:", error);
@@ -53,15 +54,6 @@ export default function Home() {
         <ul>
           <li>
             <div>
-              Wether <br />
-              <ul>
-                <li>・temp</li>
-                <li>・svg</li>
-              </ul>
-            </div>
-          </li>
-          <li>
-            <div>
               Latest Earthquake
               <ul>
                 <li>震度</li>
@@ -74,7 +66,7 @@ export default function Home() {
           <li>
             <div>
               Tsunami <br />
-              {Tsunami} <br />
+              <div className={classes.tsunami}>{Tsunami}</div> <br />
             </div>
           </li>
           <li>
