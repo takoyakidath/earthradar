@@ -6,6 +6,7 @@
 manage.shのhelp
 ```sh manage.sh -h```
 
+# 開発者へ
 
 # LICENSE
 Copyright (c) 2024- Yuito Akatsuki All rights reserved.
