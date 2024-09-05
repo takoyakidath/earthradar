@@ -5,3 +5,7 @@
 # Help
 manage.shのhelp
 ```sh manage.sh -h```
+
+
+# LICENSE
+Copyright (c) 2024- Yuito Akatsuki All rights reserved.
