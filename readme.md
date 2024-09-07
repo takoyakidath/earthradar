@@ -1,4 +1,6 @@
 # earthquake  -  youtube Live Stream
+# Technology used
+dotenv nextjs shell nodejs react tailwind typescript sqllite ngix docker javascript 
 # Overview
 # Usage
 1.manage.shを実行する
@@ -10,7 +12,7 @@ manage.shのhelp
 
 # Reference
 
-# 開発者へ
+# To the developer
 
 # LICENSE
 Copyright (c) 2024- Yuito Akatsuki All rights reserved.
