@@ -1,4 +1,11 @@
 # earthquake  -  youtube Live Stream 
+<h1 align="center">
+  <br>
+  <br>
+  earthquake
+  <br>
+</h1>
+
 # This project is under development
 # Technology used
 dotenv nextjs shell nodejs react tailwind typescript sqllite ngix docker javascript 
