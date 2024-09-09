@@ -3,7 +3,6 @@
 
 # This project is under development
 # Technology used
-dotenv nextjs shell nodejs react tailwind typescript sqllite ngix docker javascript 
 <img src="https://img.shields.io/badge/Javascript-276DC3.svg?logo=javascript&style=flat">
 <img src="https://img.shields.io/badge/-TypeScript-007ACC.svg?logo=typescript&style=flat">
 <img src="https://img.shields.io/badge/-Nginx-bfcfcf.svg?logo=nginx&style=flat">
