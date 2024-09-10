@@ -27,3 +27,4 @@
 # How to commit
 # LICENSE
 Copyright (c) 2024- Yuito Akatsuki All rights reserved.
+EarthRadar is licensed under the Apache License, Version2.0
