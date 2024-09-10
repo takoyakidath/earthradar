@@ -1,4 +1,4 @@
-# earthquake  -  youtube Live Stream 
+# EarthRadar  -  youtube Live Stream 
 
 
 # This project is under development
@@ -13,6 +13,12 @@
 # Overview
 # Getting Started
 ```sh manage.sh -i```
+## 次回以降の起動/停止/設定
+```eqke start```
+```eqke stop```
+```eqke setting```
+## Develop起動
+```sh manage.sh -d```
 # Features
 
 # Reference

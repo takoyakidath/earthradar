@@ -1,3 +1,4 @@
+#path通し
 #nextjsなどのインストールをする
 apt install nextjs
 apt install ffmpeg
