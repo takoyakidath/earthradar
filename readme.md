@@ -13,12 +13,12 @@
 # Overview
 # Getting Started
 ```sh manage.sh -i```
-## 次回以降の起動/停止/設定
-```eqke start```
-```eqke stop```
-```eqke setting```
-## Develop起動
-```sh manage.sh -d```
+## Start/Stop/Settings/dev/install for Future Sessions
+```eqke-start```
+```eqke-stop```
+```eqke-setting```
+```eqke-dev```
+```eqke-install```
 # Features
 
 # Reference
