@@ -9,6 +9,7 @@ show_help() {
   echo "  -t    Start the software"
   echo "  -p    Stop the software"
   echo "  -h    Show this help message"
+  echo "  -d   developer the software"
 }
 
 if [ $# -eq 0 ]; then
