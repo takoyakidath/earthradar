@@ -1,11 +1,8 @@
 #path通し
+cd ../
 pwd=$(pwd)
 export PATH=$PATH:$pwd
-alias eqke-start='sh $pwd/start.sh'
-alias eqke-install='sh $pwd/install.sh'
-alias eqke-setting='sh $pwd/setting.sh'
-alias eqke-stop='sh $pwd/stop.sh'
-alias eqke='sh $pwd/dev.sh'
+alias eqke='sh $pwd/manage.sh'
 source ~/.bashrc 
 
 #nextjsなどのインストールをする
