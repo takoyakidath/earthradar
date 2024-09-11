@@ -10,11 +10,11 @@
 # Getting Started
 ```sh manage.sh -i```
 ## Start/Stop/Settings/dev/install for Future Sessions
-```eqke-start```
-```eqke-stop```
-```eqke-setting```
-```eqke-dev```
-```eqke-install```
+```eqke start```
+```eqke stop```
+```eqke setting```
+```eqke dev```
+```eqke install```
 # Features
 
 # Reference
