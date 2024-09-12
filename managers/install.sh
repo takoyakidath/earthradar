@@ -1,10 +1,9 @@
 #path通し
 cd ../
 pwd=$(pwd)
-export PATH=$PATH:$pwd
 alias eqke='sh $pwd/manage.sh'
-source ~/.bashrc 
-
+echo "export PATH=\$PATH:$pwd" >> ~/.bash_profile
+source ~/.bash_profile
 #nextjsなどのインストールをする
 apt install nextjs
 apt install ffmpeg
