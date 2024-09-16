@@ -7,12 +7,12 @@ source ~/.bash_profile
 #nextjsなどのインストールをする
 apt install nextjs
 apt install ffmpeg
+apt install Docker
 #EarthQuakeの.envの編集を求める
 #1.YoutubeのRTMP
 echo "Please enter the RTMP URL:"
 read rtmp
-echo $rtmp
-echo "rtmp=\"$rtmp\"" >> ../scripts/.env
+echo "rtmp=\"$rtmp\"" > ../scripts/.env
 #scriptsの中のsystemctlファイルをcpする
 #buildする
 #start.shを実行する
