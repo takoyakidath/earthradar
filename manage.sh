@@ -9,7 +9,7 @@ show_help() {
   echo "  -t    Start the software"
   echo "  -p    Stop the software"
   echo "  -h    Show this help message"
-  echo "  -d   developer the software"
+  echo "  -d   development the software"
 }
 
 if [ $# -eq 0 ]; then
@@ -35,6 +35,11 @@ do
       ./managers/start.sh
       ;;
     p)
+      echo "[-p] が指定されました: ソフトウェアを停止します"
+      # 停止のコードをここに追加
+      ./managers/stop.sh
+      ;;
+    d)
       echo "[-p] が指定されました: ソフトウェアを停止します"
       # 停止のコードをここに追加
       ./managers/stop.sh
