@@ -13,6 +13,6 @@ apt install Docker
 echo "Please enter the RTMP URL:"
 read rtmp
 echo "rtmp=\"$rtmp\"" > ../scripts/.env
-#scriptsの中のsystemctlファイルをcpする
-#buildする
+#dockerをbuildする
 #start.shを実行する
+sh start.sh
