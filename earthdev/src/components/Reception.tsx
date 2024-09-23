@@ -1,39 +1,59 @@
-require("dotenv").config();
 import classes from "@/components/classes.module.css";
 import { useState, useEffect } from "react";
 
 export function Reception() {
-  // APIのステータスを保持するための状態変数
-  const [exportJma, setExportJma] = useState(() => {
-    const savedJma = localStorage.getItem("exportJma");
-    return savedJma ? JSON.parse(savedJma) : null;
-  });
+  // const [exportJma, setExportJma] = useState(() => {
+  //   const savedJma = localStorage.getItem("exportJma");
+  //   return savedJma ? JSON.parse(savedJma) : null;
+  // });
 
-  const [exportP2P, setExportP2P] = useState(() => {
-    const savedP2P = localStorage.getItem("exportP2P");
-    return savedP2P ? JSON.parse(savedP2P) : null;
-  });
-  const [exportTime, setexportTime] = useState(() => {
-    const savedTime = localStorage.getItem("exportTime");
-    return savedTime ? JSON.parse(savedTime) : null;
-  });
+  // const [exportP2P, setExportP2P] = useState(() => {
+  //   const savedP2P = localStorage.getItem("exportP2P");
+  //   return savedP2P ? JSON.parse(savedP2P) : null;
+  // });
+  // const [exportTime, setexportTime] = useState(() => {
+  //   const savedTime = localStorage.getItem("exportTime");
+  //   return savedTime ? JSON.parse(savedTime) : null;
+  // });
 
-  useEffect(() => {
-    localStorage.setItem("exportJma", JSON.stringify(exportJma));
-  }, [exportJma]);
+  // useEffect(() => {
+  //   localStorage.setItem("exportJma", JSON.stringify(exportJma));
+  // }, [exportJma]);
 
-  useEffect(() => {
-    localStorage.setItem("exportP2P", JSON.stringify(exportP2P));
-  }, [exportP2P]);
-  useEffect(() => {
-    localStorage.setItem("exportTime", JSON.stringify(exportTime));
-  }, [exportTime]);
+  // useEffect(() => {
+  //   localStorage.setItem("exportP2P", JSON.stringify(exportP2P));
+  // }, [exportP2P]);
+  // useEffect(() => {
+  //   localStorage.setItem("exportTime", JSON.stringify(exportTime));
+  // }, [exportTime]);
+
+  
+// 上の文を書き直し
+ // APIのステータスを保持するための状態変数
+  // ローカルストレージからデータを取得
+// JSON.parseでオブジェクトに変換、存在しない場合は null を返す
+// exportJma は Obj or null が入る
+// exportJma が変更されたらローカルストレージに保存
+// その際に JSON.stringify で文字列に変換して保存
+
+  useEffect(
+    () => {
+      const startup = () => {
+        // startup ロジック
+      };
+      startup();
+    },
+    [
+      /* 依存関係 */
+    ]
+  );
 
   async function reception() {
-      alert("受信しました。!");
-      getData();
-      getTime();
+    alert("受信しました。!");
+    getData();
+    getTime();
   }
+
   function getTime() {
     const now = new Date();
     const jpTime = now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
@@ -50,8 +70,8 @@ export function Reception() {
     };
 
     APIP2P.onclose = function (event) {
-      console.log("🔴"+event.code);
-      setExportP2P("🔴"+event.code); // 終了時に状態を更新
+      console.log("🔴" + event.code);
+      setExportP2P("🔴" + event.code); // 終了時に状態を更新
     };
 
     const APIJMA = await fetch(
@@ -61,11 +81,9 @@ export function Reception() {
       console.log("🟢OK");
       setExportJma("🟢OK");
     } else {
-      console.log("🔴"+APIJMA.status);
-      setExportJma("🔴"+APIJMA.status);
+      console.log("🔴" + APIJMA.status);
+      setExportJma("🔴" + APIJMA.status);
     }
-
-    
   }
 
   return (
@@ -80,11 +98,12 @@ export function Reception() {
           取得時間　{exportTime}
           <br />
         </code>
-        P2P-APIが1001になるのは仕様です　気にしないでください！<br />
+        P2P-APIが1001になるのは仕様です　気にしないでください！
+        <br />
         <button className={classes.button} onClick={reception}>
           受信
         </button>
       </main>
     </div>
   );
-};
+}
