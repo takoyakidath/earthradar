@@ -1,4 +1,4 @@
 echo start
 #nextjs startup
 #ffmpeg startup
-#nginx startup
+#nginx startup (development - earthsite)

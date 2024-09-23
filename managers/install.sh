@@ -8,7 +8,6 @@ source ~/.bash_profile
 apt install nextjs
 apt install ffmpeg
 apt install Docker
-#EarthQuakeの.envの編集を求める
 #1.YoutubeのRTMP
 echo "Please enter the RTMP URL:"
 read rtmp
