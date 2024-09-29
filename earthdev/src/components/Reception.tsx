@@ -1,40 +1,13 @@
 import classes from "@/components/classes.module.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, createContext, useContext } from "react";
 
 export function Reception() {
-  // const [exportJma, setExportJma] = useState(() => {
-  //   const savedJma = localStorage.getItem("exportJma");
-  //   return savedJma ? JSON.parse(savedJma) : null;
-  // });
-
-  // const [exportP2P, setExportP2P] = useState(() => {
-  //   const savedP2P = localStorage.getItem("exportP2P");
-  //   return savedP2P ? JSON.parse(savedP2P) : null;
-  // });
-  // const [exportTime, setexportTime] = useState(() => {
-  //   const savedTime = localStorage.getItem("exportTime");
-  //   return savedTime ? JSON.parse(savedTime) : null;
-  // });
-
-  // useEffect(() => {
-  //   localStorage.setItem("exportJma", JSON.stringify(exportJma));
-  // }, [exportJma]);
-
-  // useEffect(() => {
-  //   localStorage.setItem("exportP2P", JSON.stringify(exportP2P));
-  // }, [exportP2P]);
-  // useEffect(() => {
-  //   localStorage.setItem("exportTime", JSON.stringify(exportTime));
-  // }, [exportTime]);
-
-  
-// 上の文を書き直し
- // APIのステータスを保持するための状態変数
-  // ローカルストレージからデータを取得
-// JSON.parseでオブジェクトに変換、存在しない場合は null を返す
-// exportJma は Obj or null が入る
-// exportJma が変更されたらローカルストレージに保存
-// その際に JSON.stringify で文字列に変換して保存
+  const [ExportP2P, setExportP2P] = useState(0);
+  const [ExportTime, setExportTime] = useState(0);
+  const [ExportJma, setExportJma] = useState(0);
+  //"setExportP2P"→"ExportP2P"
+  //"setExportTime"→"ExportTime"
+  //"setExportJma"→"ExportJma"
 
   useEffect(
     () => {
@@ -58,7 +31,7 @@ export function Reception() {
     const now = new Date();
     const jpTime = now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
     console.log("日本時間:", jpTime);
-    setexportTime(jpTime);
+    setExportTime(jpTime);
   }
   async function getData() {
     //apiに受信しに行く
