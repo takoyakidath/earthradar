@@ -1,6 +1,5 @@
 import classes from "@/components/classes.module.css";
 import { useState, useEffect } from "react";
-import { Lumiflex } from "uvcanvas";
 
 export function Reception() {
   const [exportP2P, setExportP2P] = useState("");
@@ -79,7 +78,6 @@ export function Reception() {
     <div>
       <main className="font-mono">
         <code>
-          <Lumiflex />
           <br />
           JMA-API {exportJma}
           <br />
