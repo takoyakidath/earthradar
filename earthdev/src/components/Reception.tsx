@@ -28,17 +28,15 @@ useEffect(() => {
   //"setExportTime"→"ExportTime"
   //"setExportJma"→"ExportJma"
 
-  useEffect(
-    () => {
-      const startup = () => {
-        // startup ロジック
-      };
-      startup();
-    },
-    [
-      /* 依存関係 */
-    ]
-  );
+  useEffect(() => {
+    const startup = () => {
+      console.log('Startup関数が実行されました');
+    };
+
+    getData();
+    getTime();
+
+  }, []); 
 
   async function reception() {
     alert("受信しました。!");
