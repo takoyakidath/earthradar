@@ -2,9 +2,28 @@ import classes from "@/components/classes.module.css";
 import { useState, useEffect, createContext, useContext } from "react";
 
 export function Reception() {
-  const [ExportP2P, setExportP2P] = useState(0);
-  const [ExportTime, setExportTime] = useState(0);
-  const [ExportJma, setExportJma] = useState(0);
+  const [exportP2P, setExportP2P] = useState("");
+  const [exportTime, setExportTime] = useState("");
+  const [exportJma, setExportJma] = useState("");
+// 値をセッションストレージに保存する関数
+const saveToSessionStorage = (key: string, value: string) => {
+  sessionStorage.setItem(key, value);
+};
+
+// 状態が変わるたびにセッションストレージに保存する
+useEffect(() => {
+  if (exportP2P) saveToSessionStorage("ExportP2P", exportP2P);
+}, [exportP2P]);
+
+useEffect(() => {
+  if (exportTime) saveToSessionStorage("ExportTime", exportTime);
+}, [exportTime]);
+
+useEffect(() => {
+  if (exportJma) saveToSessionStorage("ExportJma", exportJma);
+}, [exportJma]);
+
+
   //"setExportP2P"→"ExportP2P"
   //"setExportTime"→"ExportTime"
   //"setExportJma"→"ExportJma"
