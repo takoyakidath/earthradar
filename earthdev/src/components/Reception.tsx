@@ -33,7 +33,7 @@ useEffect(() => {
     const startup = () => {
       console.log('Startup関数が実行されました');
     };
-
+    startup();
     getData();
     getTime();
 
@@ -79,7 +79,7 @@ useEffect(() => {
 
   return (
     <div>
-      <main>
+      <main className="font-mono">
         <code>
         <Lumiflex />
           <br />
@@ -90,7 +90,6 @@ useEffect(() => {
           取得時間　{exportTime}
           <br />
         </code>
-        P2P-APIが1001になるのは仕様です　気にしないでください！
         <br />
         <button className={classes.button} onClick={reception}>
           受信
