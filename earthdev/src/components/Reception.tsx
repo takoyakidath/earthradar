@@ -1,29 +1,28 @@
 import classes from "@/components/classes.module.css";
 import { useState, useEffect } from "react";
-import { Lumiflex } from "uvcanvas"
+import { Lumiflex } from "uvcanvas";
 
 export function Reception() {
   const [exportP2P, setExportP2P] = useState("");
   const [exportTime, setExportTime] = useState("");
   const [exportJma, setExportJma] = useState("");
-// 値をセッションストレージに保存する関数
-const saveToSessionStorage = (key: string, value: string) => {
-  sessionStorage.setItem(key, value);
-};
+  // 値をセッションストレージに保存する関数
+  const saveToSessionStorage = (key: string, value: string) => {
+    sessionStorage.setItem(key, value);
+  };
 
-// 状態が変わるたびにセッションストレージに保存する
-useEffect(() => {
-  if (exportP2P) saveToSessionStorage("ExportP2P", exportP2P);
-}, [exportP2P]);
+  // 状態が変わるたびにセッションストレージに保存する
+  useEffect(() => {
+    if (exportP2P) saveToSessionStorage("ExportP2P", exportP2P);
+  }, [exportP2P]);
 
-useEffect(() => {
-  if (exportTime) saveToSessionStorage("ExportTime", exportTime);
-}, [exportTime]);
+  useEffect(() => {
+    if (exportTime) saveToSessionStorage("ExportTime", exportTime);
+  }, [exportTime]);
 
-useEffect(() => {
-  if (exportJma) saveToSessionStorage("ExportJma", exportJma);
-}, [exportJma]);
-
+  useEffect(() => {
+    if (exportJma) saveToSessionStorage("ExportJma", exportJma);
+  }, [exportJma]);
 
   //"setExportP2P"→"ExportP2P"
   //"setExportTime"→"ExportTime"
@@ -31,13 +30,12 @@ useEffect(() => {
 
   useEffect(() => {
     const startup = () => {
-      console.log('Startup関数が実行されました');
+      console.log("Startup関数が実行されました");
     };
     startup();
     getData();
     getTime();
-
-  }, []); 
+  }, []);
 
   async function reception() {
     alert("受信しました。!");
@@ -81,7 +79,7 @@ useEffect(() => {
     <div>
       <main className="font-mono">
         <code>
-        <Lumiflex />
+          <Lumiflex />
           <br />
           JMA-API {exportJma}
           <br />
