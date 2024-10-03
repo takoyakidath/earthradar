@@ -26,7 +26,5 @@
 
 # Reference
 
-# To the developer
-# How to commit
 # LICENSE
 EarthRadar is licensed under the Apache License, Version2.0
