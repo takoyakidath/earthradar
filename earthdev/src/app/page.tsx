@@ -9,7 +9,14 @@ export default function Home() {
       <main>
         <Reception />
         <br />
-        <Link href="/">
+        <Link href="https://github.com/Takoyaki-neonz-net/EarthRadar">
+        <button className={classes.button}>
+          github
+        </button>
+        </Link>
+        <br />
+        <Link href="localhost:4140">
+            {/*修正予定*/}
           <button className={classes.button}>Go to Home</button>
         </Link>
       </main>

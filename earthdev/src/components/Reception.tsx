@@ -1,10 +1,12 @@
 import classes from "@/components/classes.module.css";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 export function Reception() {
   const [exportP2P, setExportP2P] = useState("");
   const [exportTime, setExportTime] = useState("");
   const [exportJma, setExportJma] = useState("");
+  const [exportSite, setExportSite] = useState("");
   // 値をセッションストレージに保存する関数
   const saveToSessionStorage = (key: string, value: string) => {
     sessionStorage.setItem(key, value);
@@ -22,6 +24,9 @@ export function Reception() {
   useEffect(() => {
     if (exportJma) saveToSessionStorage("ExportJma", exportJma);
   }, [exportJma]);
+  useEffect(() => {
+    if (exportSite) saveToSessionStorage("ExportSite", exportSite);
+  }, [exportSite]);
 
   //"setExportP2P"→"ExportP2P"
   //"setExportTime"→"ExportTime"
@@ -34,12 +39,17 @@ export function Reception() {
     startup();
     getData();
     getTime();
+    getSite();
   }, []);
-
   async function reception() {
     alert("受信しました。!");
     getData();
     getTime();
+    getSite();
+  }
+  function getSite() {
+    setExportSite("🟡実装中")
+    // earthquake側のapiから持ってくる予定
   }
 
   function getTime() {
@@ -83,10 +93,11 @@ export function Reception() {
           <br />
           P2P-API {exportP2P}
           <br />
-          取得時間　{exportTime}
+          Earthsite  {exportSite} 
+          <br />
+          取得時間 {exportTime}
           <br />
         </code>
-        <br />
         <button className={classes.button} onClick={reception}>
           受信
         </button>
