@@ -48,7 +48,7 @@ Port ```2025```
 
 
 改善点
-- ステータス表示サイトでearthsiteの状況も表示できるようにしたい
+- ステータス表示サイトでearthsiteの状況も表示できるようにしたい ok
 Todo
-- Dockerとなぎっくすのリバースプロキシをやる
-- GithubのURLをおく
+- Dockerとなぎっくすのリバースプロキシをやる ok
+- GithubのURLをおく ok 

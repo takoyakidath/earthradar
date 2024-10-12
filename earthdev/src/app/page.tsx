@@ -15,10 +15,12 @@ export default function Home() {
         </button>
         </Link>
         <br />
+            {/*
         <Link href="localhost:4140">
-            {/*修正予定*/}
+        修正予定
           <button className={classes.button}>Go to Home</button>
         </Link>
+        */}
       </main>
       <h1> Copyright © 2024 Takoyaki. All rights reserved.</h1>
     </div>
