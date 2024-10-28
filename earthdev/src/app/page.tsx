@@ -6,7 +6,7 @@ export default function Home() {
     <main>
       <Reception />
       <div className="p-5">
-        <small className="text-base">
+        <small className="text-base font-mono">
           Copyright © 2024 Takoyaki. All rights reserved.
         </small>
       </div>
