@@ -1,4 +1,3 @@
-import classes from "@/components/classes.module.css";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
@@ -24,13 +23,10 @@ export function Reception() {
   useEffect(() => {
     if (exportJma) saveToSessionStorage("ExportJma", exportJma);
   }, [exportJma]);
+
   useEffect(() => {
     if (exportSite) saveToSessionStorage("ExportSite", exportSite);
   }, [exportSite]);
-
-  //"setExportP2P"→"ExportP2P"
-  //"setExportTime"→"ExportTime"
-  //"setExportJma"→"ExportJma"
 
   useEffect(() => {
     const startup = () => {
@@ -41,15 +37,16 @@ export function Reception() {
     getTime();
     getSite();
   }, []);
+
   async function reception() {
     alert("受信しました。!");
     getData();
     getTime();
     getSite();
   }
+
   function getSite() {
-    setExportSite("🟡実装中")
-    // earthquake側のapiから持ってくる予定
+    setExportSite("[UNDER DEVELOPMENT]"); // 絵文字から変更
   }
 
   function getTime() {
@@ -58,49 +55,50 @@ export function Reception() {
     console.log("日本時間:", jpTime);
     setExportTime(jpTime);
   }
+
   async function getData() {
-    //apiに受信しに行く
     const APIP2P = new WebSocket("wss://api.p2pquake.net/v2/ws");
 
     APIP2P.onopen = function (event) {
-      console.log("🟢OK");
-      setExportP2P("🟢OK"); // 接続成功時に状態を更新
+      console.log("[OK]");
+      setExportP2P("[OK]"); // 接続成功時の表示変更
     };
 
     APIP2P.onclose = function (event) {
-      console.log("🔴" + event.code);
-      setExportP2P("🔴" + event.code); // 終了時に状態を更新
+      console.log("[NG] " + event.code);
+      setExportP2P("[NG] " + event.code); // エラーコードを表示
     };
 
     const APIJMA = await fetch(
-      "https://www.jma.go.jp/bosai/forecast/data/forecast/130000.json"
+      "https://www.jma.go.jp/bosai/forecast/data/forecast/130000.json",
     );
     if (APIJMA.ok) {
-      console.log("🟢OK");
-      setExportJma("🟢OK");
+      console.log("[OK]");
+      setExportJma("[OK]");
     } else {
-      console.log("🔴" + APIJMA.status);
-      setExportJma("🔴" + APIJMA.status);
+      console.log("[NG] " + APIJMA.status);
+      setExportJma("[NG] " + APIJMA.status);
     }
   }
 
   return (
     <div>
       <main className="font-mono">
-        <code>
-          <br />
-          JMA-API {exportJma}
-          <br />
-          P2P-API {exportP2P}
-          <br />
-          Earthsite  {exportSite} 
-          <br />
-          取得時間 {exportTime}
-          <br />
-        </code>
-        <button className={classes.button} onClick={reception}>
-          受信
-        </button>
+        <div className="p-5">
+          <code>
+            JMA-API {exportJma}
+            <br />
+            P2P-API {exportP2P}
+            <br />
+            Earthsite {exportSite}
+            <br />
+            Time {exportTime}
+          </code>
+        </div>
+        <div className="flex flex-row w-full items-start underline space-x-5 px-5">
+          <button onClick={reception}>RECEPTION</button>
+          <Link href="https://github.com/takoyaki-desu/earthradar">GITHUB</Link>
+        </div>
       </main>
     </div>
   );
