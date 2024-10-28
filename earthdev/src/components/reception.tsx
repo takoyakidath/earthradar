@@ -30,7 +30,7 @@ export function Reception() {
 
   useEffect(() => {
     const startup = () => {
-      console.log("Startup関数が実行されました");
+      console.log("Startup function has been executed");
     };
     startup();
     getData();
@@ -39,7 +39,7 @@ export function Reception() {
   }, []);
 
   async function reception() {
-    alert("受信しました。!");
+    alert("Received!");
     getData();
     getTime();
     getSite();
@@ -51,8 +51,8 @@ export function Reception() {
 
   function getTime() {
     const now = new Date();
-    const jpTime = now.toLocaleString("ja-JP", { timeZone: "Asia/Tokyo" });
-    console.log("日本時間:", jpTime);
+    const jpTime = now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" });
+    console.log("Japan Time: " + jpTime);
     setExportTime(jpTime);
   }
 
