@@ -38,7 +38,7 @@ const MapData = () => {
         style={{ height: "100%", width: "100%", background: "#1d1d1d" }}
       >
         {geoData && <GeoJSON data={geoData} style={polygonStyle} />}
-        <Marker position={[36.575, 137.984]} icon={epicenterIconImage} />
+        <Marker position={[35.2, 140.9]} icon={epicenterIconImage} />
       </MapContainer>
     </div>
   );
