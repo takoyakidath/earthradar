@@ -1,15 +1,33 @@
 import React from "react";
 
-interface earthquake {
+interface EarthquakeData {
   id: string;
-  date: string; // ISO形式の日付
+  date: string; // ISO形式
   location: string;
   magnitude: number;
   depth: number; // km
-  intensity?: string; // 最大震度（例: "震度5強"）
+  intensity?: string; // 例: "震度5強"
+  tsunami: boolean;
 }
 
-const Earthquake: React.FC<{ data: earthquake }> = ({ data }) => {
+// 震度→背景色マッピング
+const getColorByIntensity = (intensity?: string): string => {
+  if (!intensity) return "bg-gray-300"; // 情報なし
+
+  if (intensity.includes("震度1")) return "bg-green-100";
+  if (intensity.includes("震度2")) return "bg-yellow-100";
+  if (intensity.includes("震度3")) return "bg-yellow-200";
+  if (intensity.includes("震度4")) return "bg-orange-200";
+  if (intensity.includes("震度5弱")) return "bg-orange-300";
+  if (intensity.includes("震度5強")) return "bg-red-300";
+  if (intensity.includes("震度6弱")) return "bg-red-400";
+  if (intensity.includes("震度6強")) return "bg-red-500";
+  if (intensity.includes("震度7")) return "bg-red-600";
+
+  return "bg-gray-300"; // 該当しない場合
+};
+
+const Earthquake: React.FC<{ data: EarthquakeData }> = ({ data }) => {
   const formattedDate = new Date(data.date).toLocaleString("ja-JP", {
     timeZone: "Asia/Tokyo",
     year: "numeric",
@@ -19,8 +37,10 @@ const Earthquake: React.FC<{ data: earthquake }> = ({ data }) => {
     minute: "2-digit",
   });
 
+  const bgColor = getColorByIntensity(data.intensity);
+
   return (
-    <div className="bg-white rounded-xl shadow-md p-4 border border-gray-200">
+    <div className={`${bgColor} rounded-xl shadow-md p-4 border border-gray-200`}>
       <div className="text-sm text-gray-500 mb-1">{formattedDate}</div>
       <div className="text-lg font-semibold text-gray-800">{data.location}</div>
       <div className="mt-2 space-y-1 text-sm text-gray-700">
@@ -33,6 +53,11 @@ const Earthquake: React.FC<{ data: earthquake }> = ({ data }) => {
         {data.intensity && (
           <div>
             <span className="font-medium">最大震度:</span> {data.intensity}
+          </div>
+        )}
+        {data.tsunami && (
+          <div>
+            <span className="font-medium">津波:</span> あり
           </div>
         )}
       </div>
