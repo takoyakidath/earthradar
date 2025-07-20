@@ -13,7 +13,29 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                 location: "茨城県沖",
                 magnitude: 5.3,
                 depth: 60,
-                intensity: "震度4",
+                intensity: "震度7",
+                tsunami: true,
+              }}
+            />
+            <Earthquake
+              data={{
+                id: "eq20250719",
+                date: "2025-07-19T08:45:00+09:00",
+                location: "茨城県沖",
+                magnitude: 5.3,
+                depth: 60,
+                intensity: "震度5強",
+                tsunami: true,
+              }}
+            />
+            <Earthquake
+              data={{
+                id: "eq20250719",
+                date: "2025-07-19T08:45:00+09:00",
+                location: "茨城県沖",
+                magnitude: 5.3,
+                depth: 60,
+                intensity: "震度6強",
                 tsunami: true,
               }}
             />
@@ -35,29 +57,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                 location: "茨城県沖",
                 magnitude: 5.3,
                 depth: 60,
-                intensity: "震度4",
-                tsunami: true,
-              }}
-            />
-            <Earthquake
-              data={{
-                id: "eq20250719",
-                date: "2025-07-19T08:45:00+09:00",
-                location: "茨城県沖",
-                magnitude: 5.3,
-                depth: 60,
-                intensity: "震度4",
-                tsunami: true,
-              }}
-            />
-            <Earthquake
-              data={{
-                id: "eq20250719",
-                date: "2025-07-19T08:45:00+09:00",
-                location: "茨城県沖",
-                magnitude: 5.3,
-                depth: 60,
-                intensity: "震度4",
+                intensity: "震度5強",
                 tsunami: true,
               }}
             />
