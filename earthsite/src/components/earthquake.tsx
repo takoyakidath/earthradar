@@ -40,7 +40,7 @@ const Earthquake: React.FC<{ data: EarthquakeData }> = ({ data }) => {
   const bgColor = getColorByIntensity(data.intensity);
 
   return (
-    <div className={`${bgColor} rounded-xl shadow-md p-4 border border-gray-200`}>
+    <div className={`${bgColor} rounded-xl shadow-md p-4 border ${data.tsunami ? "border-blue-500" : "border-gray-200"}`}>
       <div className="text-sm text-gray-500 mb-1">{formattedDate}</div>
       <div className="text-lg font-semibold text-gray-800">{data.location}</div>
       <div className="mt-2 space-y-1 text-sm text-gray-700">
