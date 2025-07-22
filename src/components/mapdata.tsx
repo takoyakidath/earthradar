@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, TileLayer, GeoJSON, Marker, Popup } from "react-leaflet";
+import { MapContainer, GeoJSON, Marker } from "react-leaflet";
 import { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -67,8 +67,7 @@ const MapData = () => {
         {geoData && <GeoJSON data={geoData} style={polygonStyle} />}
 
         {earthquakes.map((eq) => {
-          const { latitude, longitude, name, magnitude, depth } = eq.earthquake.hypocenter;
-          const maxScale = eq.earthquake.maxScale;
+          const { latitude, longitude } = eq.earthquake.hypocenter;
 
           return (
             <Marker
