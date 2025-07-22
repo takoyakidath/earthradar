@@ -1,9 +1,10 @@
 // @ts-nocheck
 'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, ReactNode } from "react";
 import Earthquake from "./earthquake";
 
+// 地震データの型定義
 interface EarthquakeData {
   id: string;
   date: string;
@@ -14,58 +15,81 @@ interface EarthquakeData {
   tsunami: boolean;
 }
 
-export default function Sidebar({ children }: { children: React.ReactNode }) {
+// APIレスポンスの型定義（必要に応じて拡張）
+interface ApiEarthquakeEntry {
+  id: string;
+  earthquake: {
+    time: string;
+    hypocenter: {
+      name?: string;
+      magnitude: number;
+      depth: number;
+    } | null;
+    maxScale: number;
+    domesticTsunami: string;
+  };
+}
+
+// サイドバーコンポーネント
+export default function Sidebar({ children }: { children: ReactNode }) {
   const [earthquakes, setEarthquakes] = useState<EarthquakeData[]>([]);
 
   useEffect(() => {
-    const fetchData = () => {
-      fetch("/api/earthquakes")
-        .then((res) => res.json())
-        .then((data) => {
-          const converted = data
-            .filter((d: any) => d.earthquake?.hypocenter)
-            .map(convertToCardData);
-          setEarthquakes(converted);
-        });
+    // データ取得関数
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/earthquakes");
+        if (!res.ok) throw new Error("データ取得に失敗しました");
+        const data: ApiEarthquakeEntry[] = await res.json();
+        const converted = data
+          .filter((d) => d.earthquake?.hypocenter)
+          .map(convertToCardData);
+        setEarthquakes(converted);
+      } catch (error) {
+        // エラー時は空配列にする（必要に応じてエラーハンドリング拡張）
+        setEarthquakes([]);
+      }
     };
-  
-    fetchData(); 
-    const interval = setInterval(fetchData, 30000); 
-  
-    return () => clearInterval(interval); 
+
+    fetchData();
+    const interval = setInterval(fetchData, 30000);
+    return () => clearInterval(interval);
   }, []);
-  
 
   return (
     <div className="flex">
-      <div className="w-64 h-screen bg-gray-800 text-white flex flex-col">
+      <aside className="w-64 h-screen bg-gray-800 text-white flex flex-col">
         <div className="p-4 text-xl font-bold border-b border-gray-700">EarthQuake</div>
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {earthquakes.map((eq) => (
             <Earthquake key={eq.id + eq.date} data={eq} />
           ))}
         </nav>
-        <div className="p-4 border-t border-gray-700 text-sm text-gray-400">
+        <footer className="p-4 border-t border-gray-700 text-sm text-gray-400">
           &copy; 2025 EarthQuake
-        </div>
-      </div>
-      <div className="flex-1">{children}</div>
+        </footer>
+      </aside>
+      <main className="flex-1">{children}</main>
     </div>
   );
 }
 
-function convertToCardData(entry: any): EarthquakeData {
+// APIレスポンスからEarthquakeData型へ変換
+function convertToCardData(entry: ApiEarthquakeEntry): EarthquakeData {
   return {
     id: entry.id,
     date: entry.earthquake.time,
-    location: entry.earthquake.hypocenter.name || "不明",
-    magnitude: entry.earthquake.hypocenter.magnitude,
-    depth: entry.earthquake.hypocenter.depth,
+    location: entry.earthquake.hypocenter?.name || "不明",
+    magnitude: entry.earthquake.hypocenter?.magnitude ?? 0,
+    depth: entry.earthquake.hypocenter?.depth ?? 0,
     intensity: convertMaxScaleToText(entry.earthquake.maxScale),
-    tsunami: entry.earthquake.domesticTsunami === "Warning" || entry.earthquake.domesticTsunami === "Watch",
+    tsunami:
+      entry.earthquake.domesticTsunami === "Warning" ||
+      entry.earthquake.domesticTsunami === "Watch",
   };
 }
 
+// 最大震度数値をテキストに変換
 function convertMaxScaleToText(scale: number): string | undefined {
   const map: Record<number, string> = {
     10: "震度1",
@@ -78,5 +102,5 @@ function convertMaxScaleToText(scale: number): string | undefined {
     65: "震度6強",
     70: "震度7",
   };
-  return map[scale] || undefined;
+  return map[scale];
 }

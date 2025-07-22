@@ -5,24 +5,43 @@ import { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
+// GeoJSONの型（簡易）
+type GeoJsonFeatureCollection = {
+  type: "FeatureCollection";
+  features: any[]; // 必要に応じて詳細型に
+};
+
+// 地震データの型
+interface Earthquake {
+  id: string;
+  earthquake: {
+    time: string;
+    hypocenter: {
+      latitude: number;
+      longitude: number;
+    };
+    maxScale: number;
+  };
+}
+
 const MapData = () => {
-  const [geoData, setGeoData] = useState<any>(null);
-  const [earthquakes, setEarthquakes] = useState<any[]>([]);
+  const [geoData, setGeoData] = useState<GeoJsonFeatureCollection | null>(null);
+  const [earthquakes, setEarthquakes] = useState<Earthquake[]>([]);
 
   useEffect(() => {
     // 一度だけGeoJSONを読み込む
     fetch("/geojson/zone.geojson")
       .then((res) => res.json())
-      .then((data) => setGeoData(data));
+      .then((data: GeoJsonFeatureCollection) => setGeoData(data));
   }, []);
 
   useEffect(() => {
     const fetchLatestEarthquake = () => {
       fetch("/api/earthquakes")
         .then((res) => res.json())
-        .then((data) => {
+        .then((data: Earthquake[]) => {
           const sorted = data.sort(
-            (a: { earthquake: { time: string | number | Date; }; }, b: { earthquake: { time: string | number | Date; }; }) => new Date(b.earthquake.time).getTime() - new Date(a.earthquake.time).getTime()
+            (a, b) => new Date(b.earthquake.time).getTime() - new Date(a.earthquake.time).getTime()
           );
 
           const latest = sorted[0];
@@ -30,13 +49,11 @@ const MapData = () => {
         });
     };
 
-    // 初回取得
+
     fetchLatestEarthquake();
 
-    // 10秒おきに更新
     const intervalId = setInterval(fetchLatestEarthquake, 10000);
 
-    // クリーンアップ
     return () => clearInterval(intervalId);
   }, []);
 
