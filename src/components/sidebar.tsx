@@ -1,8 +1,7 @@
-// @ts-nocheck
-'use client'
+'use client';
 
-import { useEffect, useState, ReactNode } from "react";
-import Earthquake from "./earthquake";
+import { useEffect, useState, ReactNode } from 'react';
+import Earthquake from './earthquake';
 
 // 地震データの型定義
 interface EarthquakeData {
@@ -15,7 +14,7 @@ interface EarthquakeData {
   tsunami: boolean;
 }
 
-// APIレスポンスの型定義（必要に応じて拡張）
+// APIレスポンスの型定義
 interface ApiEarthquakeEntry {
   id: string;
   earthquake: {
@@ -30,23 +29,22 @@ interface ApiEarthquakeEntry {
   };
 }
 
-// サイドバーコンポーネント
+// Sidebar コンポーネント
 export default function Sidebar({ children }: { children: ReactNode }) {
   const [earthquakes, setEarthquakes] = useState<EarthquakeData[]>([]);
 
   useEffect(() => {
-    // データ取得関数
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/earthquakes");
-        if (!res.ok) throw new Error("データ取得に失敗しました");
+        const res = await fetch('/api/earthquakes');
+        if (!res.ok) throw new Error('データ取得に失敗しました');
         const data: ApiEarthquakeEntry[] = await res.json();
         const converted = data
           .filter((d) => d.earthquake?.hypocenter)
           .map(convertToCardData);
         setEarthquakes(converted);
-      } catch (error) {
-        // エラー時は空配列にする（必要に応じてエラーハンドリング拡張）
+      } catch {
+        // エラー時は空配列にする（必要に応じてログ追加）
         setEarthquakes([]);
       }
     };
@@ -59,10 +57,12 @@ export default function Sidebar({ children }: { children: ReactNode }) {
   return (
     <div className="flex">
       <aside className="w-64 h-screen bg-gray-800 text-white flex flex-col">
-        <div className="p-4 text-xl font-bold border-b border-gray-700">EarthQuake</div>
+        <div className="p-4 text-xl font-bold border-b border-gray-700">
+          EarthQuake
+        </div>
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {earthquakes.map((eq) => (
-            <Earthquake key={eq.id + eq.date} data={eq} />
+            <Earthquake key={eq.id} data={eq} />
           ))}
         </nav>
         <footer className="p-4 border-t border-gray-700 text-sm text-gray-400">
@@ -74,33 +74,33 @@ export default function Sidebar({ children }: { children: ReactNode }) {
   );
 }
 
-// APIレスポンスからEarthquakeData型へ変換
+// APIレスポンスから表示用データに変換
 function convertToCardData(entry: ApiEarthquakeEntry): EarthquakeData {
   return {
     id: entry.id,
     date: entry.earthquake.time,
-    location: entry.earthquake.hypocenter?.name || "不明",
+    location: entry.earthquake.hypocenter?.name ?? '不明',
     magnitude: entry.earthquake.hypocenter?.magnitude ?? 0,
     depth: entry.earthquake.hypocenter?.depth ?? 0,
     intensity: convertMaxScaleToText(entry.earthquake.maxScale),
     tsunami:
-      entry.earthquake.domesticTsunami === "Warning" ||
-      entry.earthquake.domesticTsunami === "Watch",
+      entry.earthquake.domesticTsunami === 'Warning' ||
+      entry.earthquake.domesticTsunami === 'Watch',
   };
 }
 
 // 最大震度数値をテキストに変換
 function convertMaxScaleToText(scale: number): string | undefined {
   const map: Record<number, string> = {
-    10: "震度1",
-    20: "震度2",
-    30: "震度3",
-    40: "震度4",
-    50: "震度5弱",
-    55: "震度5強",
-    60: "震度6弱",
-    65: "震度6強",
-    70: "震度7",
+    10: '震度1',
+    20: '震度2',
+    30: '震度3',
+    40: '震度4',
+    50: '震度5弱',
+    55: '震度5強',
+    60: '震度6弱',
+    65: '震度6強',
+    70: '震度7',
   };
   return map[scale];
 }
