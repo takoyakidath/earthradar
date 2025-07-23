@@ -1,10 +1,11 @@
-"use client";
 
+"use client";
+import { JMAPoints } from "@/components/JMAPoints";
 import { MapContainer, GeoJSON, Marker } from "react-leaflet";
 import { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-
+  
 // GeoJSONの型（簡易）
 type GeoJsonFeatureCollection = {
   type: "FeatureCollection";
@@ -24,15 +25,46 @@ interface Earthquake {
   };
 }
 
-const MapData = () => {
+interface JMAStations{
+  code: string;                
+  name: string;                
+  furigana: string;            
+  lat: string;               
+  lon: string;               
+  affi: string;               
+
+  pref: {
+    name: string;          
+    code: number;            
+    furigana: string;          
+  };
+
+  city: {
+    code: string;             
+    name: string;             
+    furigana: string;       
+  };
+
+  area: {
+    code: string;              
+    name: string;              
+    furigana: string;          
+  };
+}
+
+export default function MapData(){
   const [geoData, setGeoData] = useState<GeoJsonFeatureCollection | null>(null);
   const [earthquakes, setEarthquakes] = useState<Earthquake[]>([]);
+ const [JMAStationData,setJMAStationData] = useState<JMAStations[]>();
 
   useEffect(() => {
     // 一度だけGeoJSONを読み込む
     fetch("/geojson/zone.geojson")
       .then((res) => res.json())
       .then((data: GeoJsonFeatureCollection) => setGeoData(data));
+    fetch("/coordinate/JMAStaions.json")
+      .then((res) => res.json())
+      .then((data: JMAStations[]) => setJMAStationData(data))
   }, []);
 
   useEffect(() => {
@@ -100,4 +132,4 @@ const MapData = () => {
   );
 };
 
-export default MapData;
+
