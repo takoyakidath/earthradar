@@ -1,18 +1,15 @@
-
 "use client";
-import { JMAPoints } from "@/components/JMAPoints";
-import { MapContainer, GeoJSON, Marker } from "react-leaflet";
+
+import { MapContainer, GeoJSON, Marker, Popup } from "react-leaflet";
 import { useEffect, useState } from "react";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-  
-// GeoJSONの型（簡易）
-type GeoJsonFeatureCollection = {
-  type: "FeatureCollection";
-  features: any[]; // 必要に応じて詳細型に
-};
 
-// 地震データの型
+interface GeoJsonFeatureCollection {
+  type: "FeatureCollection";
+  features: any[];
+}
+
 interface Earthquake {
   id: string;
   earthquake: {
@@ -23,51 +20,40 @@ interface Earthquake {
     };
     maxScale: number;
   };
+  points: {
+    addr: string;
+    scale: number;
+    isArea: boolean;
+  }[];
 }
 
-interface JMAStations{
-  code: string;                
-  name: string;                
-  furigana: string;            
-  lat: string;               
-  lon: string;               
-  affi: string;               
-
-  pref: {
-    name: string;          
-    code: number;            
-    furigana: string;          
-  };
-
-  city: {
-    code: string;             
-    name: string;             
-    furigana: string;       
-  };
-
-  area: {
-    code: string;              
-    name: string;              
-    furigana: string;          
-  };
+interface JMAStation {
+  name: string;
+  lat: number;
+  lon: number;
+  furigana: string;
 }
 
-export default function MapData(){
+export default function MapData() {
   const [geoData, setGeoData] = useState<GeoJsonFeatureCollection | null>(null);
-  const [earthquakes, setEarthquakes] = useState<Earthquake[]>([]);
- const [JMAStationData,setJMAStationData] = useState<JMAStations[]>();
+  const [earthquake, setEarthquake] = useState<Earthquake | null>(null);
+  const [stations, setStations] = useState<JMAStation[]>([]);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // 一度だけGeoJSONを読み込む
-    fetch("/geojson/zone.geojson")
-      .then((res) => res.json())
-      .then((data: GeoJsonFeatureCollection) => setGeoData(data));
-    fetch("/coordinate/JMAStaions.json")
-      .then((res) => res.json())
-      .then((data: JMAStations[]) => setJMAStationData(data))
+    Promise.all([
+      fetch("/geojson/zone.geojson").then((res) => res.json()),
+      fetch("/coordinate/JMAstations.json").then((res) => res.json())
+    ]).then(([geoJson, stationJson]) => {
+      setGeoData(geoJson);
+      setStations(stationJson);
+      setReady(true);
+    });
   }, []);
 
   useEffect(() => {
+    if (!ready) return;
+
     const fetchLatestEarthquake = () => {
       fetch("/api/earthquakes")
         .then((res) => res.json())
@@ -75,19 +61,13 @@ export default function MapData(){
           const sorted = data.sort(
             (a, b) => new Date(b.earthquake.time).getTime() - new Date(a.earthquake.time).getTime()
           );
-
-          const latest = sorted[0];
-          setEarthquakes(latest ? [latest] : []);
+          setEarthquake(sorted[0]);
         });
     };
-
-
     fetchLatestEarthquake();
-
-    const intervalId = setInterval(fetchLatestEarthquake, 10000);
-
-    return () => clearInterval(intervalId);
-  }, []);
+    const interval = setInterval(fetchLatestEarthquake, 10000);
+    return () => clearInterval(interval);
+  }, [ready]);
 
   const polygonStyle = {
     color: "#ffffff",
@@ -97,12 +77,34 @@ export default function MapData(){
     fillOpacity: 1,
   };
 
-  const epicenterIconImage = L.icon({
+  const getShindoIcon = (scale: number) => {
+    const level =
+      scale === 10 ? "int1" :
+      scale === 20 ? "int2" :
+      scale === 30 ? "int3" :
+      scale === 40 ? "int4" :
+      scale === 45 ? "int50" :
+      scale === 46 ? "int_" :
+      scale === 50 ? "int55" :
+      scale === 55 ? "int60" :
+      scale === 60 ? "int65" :
+      scale === 70 ? "int7" : "int_";
+    return L.icon({
+      iconUrl: `/intensity/jqk_${level}.png`,
+      iconSize: [24, 24],
+      iconAnchor: [12, 12],
+      popupAnchor: [0, -20],
+    });
+  };
+
+  const epicenterIcon = L.icon({
     iconUrl: "/epicenter.png",
     iconSize: [40, 40],
     iconAnchor: [20, 20],
-    popupAnchor: [0, -40],
+    popupAnchor: [0, -30],
   });
+
+  const normalize = (str: string) => str.replace(/\s| |(.*?)/g, "").trim();
 
   return (
     <div style={{ height: "100vh", width: "100%", background: "#1d1d1d" }}>
@@ -111,25 +113,38 @@ export default function MapData(){
         zoom={5}
         scrollWheelZoom={true}
         zoomControl={false}
-        style={{ height: "100%", width: "100%", background: "#1d1d1d" }}
+        style={{ height: "100%", width: "100%" }}
       >
         {geoData && <GeoJSON data={geoData} style={polygonStyle} />}
 
-        {earthquakes.map((eq) => {
-          const { latitude, longitude } = eq.earthquake.hypocenter;
-
-          return (
+        {earthquake && (
+          <>
             <Marker
-              key={eq.id}
-              position={[latitude, longitude]}
-              icon={epicenterIconImage}
-            >
-            </Marker>
-          );
-        })}
+              position={[
+                earthquake.earthquake.hypocenter.latitude,
+                earthquake.earthquake.hypocenter.longitude,
+              ]}
+              icon={epicenterIcon}
+            />
+
+            {earthquake.points.map((point, idx) => {
+              const station = stations.find((s) => normalize(s.name) === normalize(point.addr));
+              if (!station || point.isArea) return null;
+              return (
+                <Marker
+                  key={`obs-${idx}`}
+                  position={[station.lat, station.lon]}
+                  icon={getShindoIcon(point.scale)}
+                >
+                  <Popup>
+                    {station.name}({station.furigana})<br />震度: {point.scale / 10}
+                  </Popup>
+                </Marker>
+              );
+            })}
+          </>
+        )}
       </MapContainer>
     </div>
   );
-};
-
-
+}
