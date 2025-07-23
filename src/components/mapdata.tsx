@@ -52,6 +52,17 @@ const shindoColorMap: Record<number, string> = {
 
 const normalize = (str: string) => str.replace(/\s|　/g, "").trim();
 
+// 地図を震源地に移動するコンポーネント
+function FlyToEpicenter({ lat, lon }: { lat: number; lon: number }) {
+  const map = useMap();
+
+  useEffect(() => {
+    map.flyTo([lat, lon], 7, { duration: 1.5 });
+  }, [lat, lon, map]);
+
+  return null;
+}
+
 export default function MapData() {
   const [geoData, setGeoData] = useState<GeoJsonFeatureCollection | null>(null);
   const [earthquake, setEarthquake] = useState<Earthquake | null>(null);
@@ -165,6 +176,13 @@ export default function MapData() {
 
         {earthquake && (
           <>
+            {/* 地図移動処理 */}
+            <FlyToEpicenter
+              lat={earthquake.earthquake.hypocenter.latitude}
+              lon={earthquake.earthquake.hypocenter.longitude}
+            />
+
+            {/* 震源地 */}
             <Marker
               position={[
                 earthquake.earthquake.hypocenter.latitude,
@@ -173,6 +191,7 @@ export default function MapData() {
               icon={epicenterIcon}
             />
 
+            {/* 観測点マーカー */}
             {earthquake.points.map((point, idx) => {
               const station = stations.find(
                 (s) => normalize(s.name) === normalize(point.addr)
@@ -185,7 +204,7 @@ export default function MapData() {
                   icon={getShindoIcon(point.scale)}
                 >
                   <Popup>
-                    {station.name}（{station.furigana}）<br />
+                    {station.name}({station.furigana})<br />
                     震度: {point.scale / 10}
                   </Popup>
                 </Marker>
