@@ -1,9 +1,16 @@
 "use client";
-import { AreaName, AreaCode } from "./JMAPoints";
-import { MapContainer, GeoJSON, Marker, Popup, useMap } from "react-leaflet";
-import { useEffect, useState } from "react";
-import "leaflet/dist/leaflet.css";
+import { useEffect, useMemo, useState } from "react";
+import {
+  MapContainer,
+  GeoJSON,
+  Marker,
+  Popup,
+  useMap,
+} from "react-leaflet";
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+import { AreaName, AreaCode } from "./JMAPoints";
 
 interface GeoJsonFeatureCollection {
   type: "FeatureCollection";
@@ -14,10 +21,7 @@ interface Earthquake {
   id: string;
   earthquake: {
     time: string;
-    hypocenter: {
-      latitude: number;
-      longitude: number;
-    };
+    hypocenter: { latitude: number; longitude: number };
     maxScale: number;
   };
   points: {
@@ -32,11 +36,10 @@ interface JMAStation {
   lat: number;
   lon: number;
   furigana: string;
-  area: {
-    name: string;
-  };
+  area: { name: string };
 }
 
+// 色分け用震度マップ
 const shindoColorMap: Record<number, string> = {
   10: "rgb(107, 120, 120)",
   20: "rgb(30, 110, 230)",
@@ -50,25 +53,48 @@ const shindoColorMap: Record<number, string> = {
   70: "rgb(150, 0, 150)",
 };
 
-const normalize = (str: string) => str.replace(/\s|　/g, "").trim();
+// 正規化関数
+const normalize = (s: string) => s.replace(/\s|　/g, "").trim();
 
-// 地図を震源地に移動するコンポーネント
-function FlyToEpicenter({ lat, lon }: { lat: number; lon: number }) {
+// 地図移動コンポーネント
+const FlyToEpicenter = ({ lat, lon }: { lat: number; lon: number }) => {
   const map = useMap();
-
   useEffect(() => {
     map.flyTo([lat, lon], 7, { duration: 1.5 });
-  }, [lat, lon, map]);
-
+  }, [lat, lon]);
   return null;
-}
+};
+
+// 震度アイコン生成
+const getShindoIcon = (scale: number): L.Icon => {
+  const map: Record<number, string> = {
+    10: "int1",
+    20: "int2",
+    30: "int3",
+    40: "int4",
+    45: "int50",
+    46: "int_",
+    50: "int55",
+    55: "int60",
+    60: "int65",
+    70: "int7",
+  };
+  const level = map[scale] || "int_";
+  return L.icon({
+    iconUrl: `/intensity/jqk_${level}.png`,
+    iconSize: [24, 24],
+    iconAnchor: [12, 12],
+    popupAnchor: [0, -20],
+  });
+};
 
 export default function MapData() {
   const [geoData, setGeoData] = useState<GeoJsonFeatureCollection | null>(null);
-  const [earthquake, setEarthquake] = useState<Earthquake | null>(null);
   const [stations, setStations] = useState<JMAStation[]>([]);
+  const [earthquake, setEarthquake] = useState<Earthquake | null>(null);
   const [filledMap, setFilledMap] = useState<Record<number, number>>({});
 
+  // 地図・観測点初期ロード
   useEffect(() => {
     Promise.all([
       fetch("/geojson/zone.geojson").then((res) => res.json()),
@@ -79,135 +105,76 @@ export default function MapData() {
     });
   }, []);
 
+  // 地震情報のポーリング
   useEffect(() => {
     if (!geoData) return;
 
-    const fetchLatestEarthquake = () => {
-      fetch("/api/earthquakes")
-        .then((res) => res.json())
-        .then((data: Earthquake[]) => {
-          const sorted = data.sort(
-            (a, b) =>
-              new Date(b.earthquake.time).getTime() -
-              new Date(a.earthquake.time).getTime()
-          );
-          setEarthquake(sorted[0]);
+    const fetchLatestEarthquake = async () => {
+      const res = await fetch("/api/earthquakes");
+      const data: Earthquake[] = await res.json();
+      const latest = data
+        .filter((d) => d?.earthquake?.hypocenter?.latitude)
+        .sort((a, b) => new Date(b.earthquake.time).getTime() - new Date(a.earthquake.time).getTime())[0];
 
-          const tmpMap: Record<number, number> = {};
+      setEarthquake(latest);
 
-          sorted[0].points.forEach((point) => {
-            if (point.isArea) return;
-            const station = stations.find(
-              (s) => normalize(s.name) === normalize(point.addr)
-            );
-            if (!station || !station.area?.name) return;
-            const idx = AreaName.findIndex(
-              (n) => normalize(n) === normalize(station.area.name)
-            );
-            if (idx === -1) return;
-            const code = AreaCode[idx];
-            if (!tmpMap[code] || tmpMap[code] < point.scale) {
-              tmpMap[code] = point.scale;
-            }
-          });
-
-          setFilledMap(tmpMap);
-        });
+      // 塗りつぶしデータ生成
+      const tmp: Record<number, number> = {};
+      latest.points.forEach((p) => {
+        if (p.isArea) return;
+        const s = stations.find((s) => normalize(s.name) === normalize(p.addr));
+        if (!s?.area?.name) return;
+        const idx = AreaName.findIndex((n) => normalize(n) === normalize(s.area.name));
+        if (idx === -1) return;
+        const code = AreaCode[idx as number];
+        if (!tmp[code] || tmp[code] < p.scale) tmp[code] = p.scale;
+      });
+      setFilledMap(tmp);
     };
 
     fetchLatestEarthquake();
-    const interval = setInterval(fetchLatestEarthquake, 10000);
-    return () => clearInterval(interval);
+    const id = setInterval(fetchLatestEarthquake, 10000);
+    return () => clearInterval(id);
   }, [geoData, stations]);
 
-  const epicenterIcon = L.icon({
-    iconUrl: "/epicenter.png",
-    iconSize: [40, 40],
-    iconAnchor: [20, 20],
-    popupAnchor: [0, -30],
-  });
-
-  const getShindoIcon = (scale: number) => {
-    const level =
-      scale === 10 ? "int1" :
-      scale === 20 ? "int2" :
-      scale === 30 ? "int3" :
-      scale === 40 ? "int4" :
-      scale === 45 ? "int50" :
-      scale === 46 ? "int_" :
-      scale === 50 ? "int55" :
-      scale === 55 ? "int60" :
-      scale === 60 ? "int65" :
-      scale === 70 ? "int7" : "int_";
-    return L.icon({
-      iconUrl: `/intensity/jqk_${level}.png`,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
-      popupAnchor: [0, -20],
-    });
-  };
+  const epicenterIcon = useMemo(
+    () =>
+      L.icon({
+        iconUrl: "/epicenter.png",
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -30],
+      }),
+    []
+  );
 
   const polygonStyle = (feature: any) => {
-    const index = geoData?.features.indexOf(feature);
-    if (index === undefined || index === -1) return {};
-    const areaCode = AreaCode[index];
-    const scale = filledMap[areaCode];
-    const fillColor = scale ? shindoColorMap[scale] : "#3a3a3a";
+    const idx = geoData?.features.indexOf(feature);
+    const areaCode = idx !== undefined && idx >= 0 ? AreaCode[idx] : undefined;
+    const scale = areaCode ? filledMap[areaCode] : undefined;
     return {
-      color: "#ffffff",
+      color: "#fff",
       weight: 1.5,
       opacity: 1,
-      fillColor,
+      fillColor: scale ? shindoColorMap[scale] : "#3a3a3a",
       fillOpacity: 1,
     };
   };
 
   return (
-    <div style={{ height: "100vh", width: "100%", background: "#1d1d1d" }}>
-      <MapContainer
-        center={[36.575, 137.984]}
-        zoom={6}
-        scrollWheelZoom={true}
-        style={{ height: "100%", width: "100%" }}
-      >
-        {geoData && (
-          <GeoJSON data={geoData} style={polygonStyle} />
-        )}
-
+    <div className="w-full h-screen bg-[#1d1d1d]">
+      <MapContainer center={[36.575, 137.984]} zoom={6} scrollWheelZoom style={{ height: "100%", width: "100%" }}>
+        {geoData && <GeoJSON data={geoData} style={polygonStyle} />}
         {earthquake && (
           <>
-            {/* 地図移動処理 */}
-            <FlyToEpicenter
-              lat={earthquake.earthquake.hypocenter.latitude}
-              lon={earthquake.earthquake.hypocenter.longitude}
-            />
-
-            {/* 震源地 */}
-            <Marker
-              position={[
-                earthquake.earthquake.hypocenter.latitude,
-                earthquake.earthquake.hypocenter.longitude,
-              ]}
-              icon={epicenterIcon}
-            />
-
-            {/* 観測点マーカー */}
-            {earthquake.points.map((point, idx) => {
-              const station = stations.find(
-                (s) => normalize(s.name) === normalize(point.addr)
-              );
-              if (!station || point.isArea) return null;
+            <FlyToEpicenter lat={earthquake.earthquake.hypocenter.latitude} lon={earthquake.earthquake.hypocenter.longitude} />
+            <Marker position={[earthquake.earthquake.hypocenter.latitude, earthquake.earthquake.hypocenter.longitude]} icon={epicenterIcon} />
+            {earthquake.points.map((p, i) => {
+              if (p.isArea) return null;
+              const station = stations.find((s) => normalize(s.name) === normalize(p.addr));
+              if (!station) return null;
               return (
-                <Marker
-                  key={`obs-${idx}`}
-                  position={[station.lat, station.lon]}
-                  icon={getShindoIcon(point.scale)}
-                >
-                  <Popup>
-                    {station.name}({station.furigana})<br />
-                    震度: {point.scale / 10}
-                  </Popup>
-                </Marker>
+                <Marker key={`pt-${i}`} position={[station.lat, station.lon]} icon={getShindoIcon(p.scale)} />
               );
             })}
           </>
