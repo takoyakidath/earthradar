@@ -66,7 +66,7 @@ export default function Sidebar({ children }: { children: ReactNode }) {
           ))}
         </nav>
         <footer className="p-4 border-t border-gray-700 text-sm text-gray-400">
-          &copy; 2025 EarthRader
+          &copy; 2025 EarthRader Dev
         </footer>
       </aside>
       <main className="flex-1">{children}</main>
