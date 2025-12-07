@@ -3,7 +3,7 @@ import "./globals.css";
 
 
 export const metadata: Metadata = {
-  title: "earthrader dev",
+  title: "earthrader",
   description: "Earthrader is a EarthQuake Monitoring System",
 };
 

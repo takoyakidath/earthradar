@@ -26,7 +26,8 @@
     "eslint": "^9.39.1",
     "eslint-config-next": "15.4.1",
     "tailwindcss": "^4.1.17",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@types/bun": "latest"
   },
   "optionalDependencies": {
     "@tailwindcss/oxide-linux-x64-gnu": "^4.1.17",

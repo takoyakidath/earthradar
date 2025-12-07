@@ -58,7 +58,7 @@ export default function Sidebar({ children }: { children: ReactNode }) {
     <div className="flex">
       <aside className="w-64 h-screen bg-gray-800 text-white flex flex-col">
         <div className="p-4 text-xl font-bold border-b border-gray-700">
-          EarthRader
+          EarthRader Dev
         </div>
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {earthquakes.map((eq) => (
