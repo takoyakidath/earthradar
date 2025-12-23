@@ -64,6 +64,9 @@ function MapPanes() {
     setPane("pane_map3", 3);
     setPane("pane_map_filled", 5);
 
+    // マーカー用のペインを明示的に作成（既存コードでは未作成）
+    setPane("markerPane", 700);
+
     Object.keys(shindoColorMap)
       .map((k) => Number(k))
       .forEach((s) => setPane(`shindo${s}`, 600 + s));
@@ -95,15 +98,24 @@ const iconNameByScale: Record<number, string> = {
   70: "int7",
 };
 
+// アイコンキャッシュを用いて同じアイコンの再生成を防ぐ
+const _shindoIconCache = new Map<number, L.Icon>();
 const getShindoIcon = (scale: number): L.Icon => {
+  const key = scale ?? -1;
+  const cached = _shindoIconCache.get(key);
+  if (cached) return cached;
   const url = `/intensity/jqk_${iconNameByScale[scale] ?? "int_"}.png`;
-  if (typeof window !== "undefined") console.debug("getShindoIcon:", scale, url);
-  return L.icon({
+  if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
+    console.debug("getShindoIcon:", scale, url);
+  }
+  const icon = L.icon({
     iconUrl: url,
     iconSize: [24, 24],
     iconAnchor: [12, 12],
     popupAnchor: [0, -18],
   });
+  _shindoIconCache.set(key, icon);
+  return icon;
 };
 
 const formatMap: Record<number, string> = {
@@ -275,7 +287,8 @@ export default function MapData() {
 
     const lat = selected.earthquake.hypocenter.latitude;
     const lon = selected.earthquake.hypocenter.longitude;
-    if (!lat || !lon) return null;
+    // 0 を正当値として扱うため、null/undefined のみチェック
+    if (lat == null || lon == null) return null;
     return { lat, lon, zoom: 8 };
   }, [selected, areaMarkers]);
 
