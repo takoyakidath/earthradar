@@ -2,17 +2,16 @@ import React from "react";
 
 interface EarthquakeData {
   id: string;
-  date: string; // ISO形式
+  date: string;
   location: string;
   magnitude: number;
-  depth: number; // km
-  intensity?: string; // 例: "震度5強"
+  depth: number;
+  intensity?: string;
   tsunami: boolean;
 }
 
-// 震度→背景色マッピング
 const getColorByIntensity = (intensity?: string): string => {
-  if (!intensity) return "bg-gray-300"; // 情報なし
+  if (!intensity) return "bg-gray-300";
 
   if (intensity.includes("震度1")) return "bg-green-100";
   if (intensity.includes("震度2")) return "bg-yellow-100";
@@ -24,7 +23,7 @@ const getColorByIntensity = (intensity?: string): string => {
   if (intensity.includes("震度6強")) return "bg-red-500";
   if (intensity.includes("震度7")) return "bg-red-600";
 
-  return "bg-gray-300"; // 該当しない場合
+  return "bg-gray-300";
 };
 
 const Earthquake: React.FC<{ data: EarthquakeData }> = ({ data }) => {

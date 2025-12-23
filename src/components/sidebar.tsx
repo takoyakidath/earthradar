@@ -3,7 +3,6 @@
 import { useEffect, useState, ReactNode } from 'react';
 import Earthquake from './earthquake';
 
-// 地震データの型定義
 interface EarthquakeData {
   id: string;
   date: string;
@@ -14,7 +13,6 @@ interface EarthquakeData {
   tsunami: boolean;
 }
 
-// APIレスポンスの型定義
 interface ApiEarthquakeEntry {
   id: string;
   earthquake: {
@@ -29,7 +27,6 @@ interface ApiEarthquakeEntry {
   };
 }
 
-// Sidebar コンポーネント
 export default function Sidebar({ children }: { children: ReactNode }) {
   const [earthquakes, setEarthquakes] = useState<EarthquakeData[]>([]);
 
@@ -44,7 +41,6 @@ export default function Sidebar({ children }: { children: ReactNode }) {
           .map(convertToCardData);
         setEarthquakes(converted);
       } catch {
-        // エラー時は空配列にする（必要に応じてログ追加）
         setEarthquakes([]);
       }
     };
@@ -74,7 +70,6 @@ export default function Sidebar({ children }: { children: ReactNode }) {
   );
 }
 
-// APIレスポンスから表示用データに変換
 function convertToCardData(entry: ApiEarthquakeEntry): EarthquakeData {
   return {
     id: entry.id,
@@ -88,8 +83,6 @@ function convertToCardData(entry: ApiEarthquakeEntry): EarthquakeData {
       entry.earthquake.domesticTsunami === 'Watch',
   };
 }
-
-// 最大震度数値をテキストに変換
 function convertMaxScaleToText(scale: number): string | undefined {
   const map: Record<number, string> = {
     10: '震度1',
