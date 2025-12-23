@@ -130,7 +130,6 @@ export default function MapData() {
   const [earthquakes, setEarthquakes] = useState<Earthquake[]>([]);
   const [selectedEarthquakeIndex, setSelectedEarthquakeIndex] = useState(0);
 
-  // 塗りつぶし： areaCode -> scale
   const [filledAreaScales, setFilledAreaScales] = useState<Record<number, number>>({});
 
   const selected = earthquakes[selectedEarthquakeIndex] ?? null;
@@ -164,7 +163,6 @@ export default function MapData() {
   }, []);
 
   const fetchEarthquakes = useCallback(async (limit = 20) => {
-    // ここは直でP2PQuake叩いてもいいけど、CORS/将来の調整のためAPI Route推奨
     const res = await fetch(`/api/earthquakes?limit=${limit}`, { cache: "no-store" });
     const data: Earthquake[] = await res.json();
     setEarthquakes(data);
@@ -177,7 +175,6 @@ export default function MapData() {
     return () => clearInterval(id);
   }, [fetchEarthquakes]);
 
-  // selected が変わったら塗りつぶし再計算（QuakeSelect相当）
   useEffect(() => {
     if (!selected) return;
 
@@ -187,8 +184,6 @@ export default function MapData() {
 
     for (const point of selected.points) {
       if (isScalePrompt) {
-        // 震度速報：地域（isArea:true）を優先して塗る
-        // addr は地域名想定 → AreaName→AreaCode
         const areaIndex = AreaName.findIndex((n) => normalize(n) === normalize(point.addr));
         if (areaIndex === -1) continue;
         const code = AreaCode[areaIndex];
@@ -196,7 +191,6 @@ export default function MapData() {
         continue;
       }
 
-      // 通常：観測点（isArea:false）から station.area.name を引いて塗る
       if (point.isArea) continue;
       const station = stationByName.get(normalize(point.addr));
       if (!station?.area?.name) continue;
@@ -238,7 +232,6 @@ export default function MapData() {
     };
   };
 
-  // 震度速報のとき：地域中心点にアイコンを置く
   const areaMarkers = useMemo(() => {
     if (!selected) return [];
     if (selected.issue?.type !== "ScalePrompt") return [];
