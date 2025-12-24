@@ -64,9 +64,6 @@ function MapPanes() {
     setPane("pane_map3", 3);
     setPane("pane_map_filled", 5);
 
-    // マーカー用のペインを明示的に作成（既存コードでは未作成）
-    setPane("markerPane", 700);
-
     Object.keys(shindoColorMap)
       .map((k) => Number(k))
       .forEach((s) => setPane(`shindo${s}`, 600 + s));
@@ -98,21 +95,15 @@ const iconNameByScale: Record<number, string> = {
   70: "int7",
 };
 
-// アイコンキャッシュを用いて同じアイコンの再生成を防ぐ
-const _shindoIconCache = new Map<number, L.Icon>();
 const getShindoIcon = (scale: number): L.Icon => {
-  const key = scale ?? -1;
-  const cached = _shindoIconCache.get(key);
-  if (cached) return cached;
   const url = `/intensity/jqk_${iconNameByScale[scale] ?? "int_"}.png`;
-  const icon = L.icon({
+  if (typeof window !== "undefined") console.debug("getShindoIcon:", scale, url);
+  return L.icon({
     iconUrl: url,
     iconSize: [24, 24],
     iconAnchor: [12, 12],
     popupAnchor: [0, -18],
   });
-  _shindoIconCache.set(key, icon);
-  return icon;
 };
 
 const formatMap: Record<number, string> = {
@@ -149,15 +140,12 @@ export default function MapData() {
     return stationMap;
   }, [stations]);
 
-  // geojson + station 読み込み
   useEffect(() => {
     (async () => {
       const [geoJson, stationsData] = await Promise.all([
         fetch("/geojson/zone.geojson").then((r) => r.json()),
         fetch("/coordinate/JMAstations.json").then((r) => r.json()),
       ]);
-
-      // ★ feature index を properties に埋める（AreaCode配列とズレない前提）
       const withIdx = {
         ...geoJson,
         features: geoJson.features.map((f: Feature<Geometry, GeoJsonProperties>, i: number) => ({
@@ -225,7 +213,6 @@ export default function MapData() {
     []
   );
 
-  // GeoJSON塗りつぶし
   const polygonStyle: StyleFunction<Feature<Geometry, GeoJsonProperties>> = (feature) => {
     const props = feature?.properties as Record<string, unknown> | undefined;
     const featureIndex = (props && (props.__idx as number | undefined)) ?? undefined;
@@ -241,39 +228,22 @@ export default function MapData() {
     };
   };
 
-  // --- ここを改良: 震度速報（ScalePrompt）は地区ごとに集約して1つだけマーカーを作成する ---
   const areaMarkers = useMemo(() => {
     if (!selected) return [];
     if (selected.issue?.type !== "ScalePrompt") return [];
 
-    // areaCode -> { scale, name }
-    const aggregated: Record<number, { scale: number; name: string }> = {};
-
-    for (const point of selected.points) {
-      const areaIndex = AreaName.findIndex((n) => normalize(n) === normalize(point.addr));
-      if (areaIndex === -1) continue;
-      const code = AreaCode[areaIndex];
-      const name = AreaName[areaIndex] ?? point.addr;
-      if (!aggregated[code] || aggregated[code].scale < point.scale) {
-        aggregated[code] = { scale: point.scale, name };
-      }
-    }
-
-    return Object.entries(aggregated).map(([codeStr, info]) => {
-      const code = Number(codeStr);
-      const center = centerPoint[String(code) as keyof typeof centerPoint] as { lat: number; lng: number } | undefined;
-      if (!center) return null;
-      return {
-        key: `area-${code}`,
-        lat: center.lat,
-        lon: center.lng,
-        scale: info.scale,
-        name: info.name,
-      };
-    }).filter(Boolean) as { key: string; lat: number; lon: number; scale: number; name: string }[];
+    return selected.points
+      .map((point, i) => {
+        const areaIndex = AreaName.findIndex((n) => normalize(n) === normalize(point.addr));
+        if (areaIndex === -1) return null;
+        const code = AreaCode[areaIndex];
+        const center = centerPoint[String(code) as keyof typeof centerPoint];
+        if (!center) return null;
+        return { key: `area-${i}`, lat: center.lat, lon: center.lng, scale: point.scale, name: point.addr };
+      })
+      .filter(Boolean) as { key: string; lat: number; lon: number; scale: number; name: string }[];
   }, [selected]);
 
-  // 通常のとき：観測点にアイコンを置く
   const stationMarkers = useMemo(() => {
     if (!selected) return [];
     if (selected.issue?.type === "ScalePrompt") return [];
@@ -291,7 +261,6 @@ export default function MapData() {
   const flyTarget = useMemo(() => {
     if (!selected) return null;
 
-    // ScalePrompt のときは中心点平均で飛ぶ（集約後の areaMarkers を使用）
     if (selected.issue?.type === "ScalePrompt" && areaMarkers.length) {
       const lat = areaMarkers.reduce((a, b) => a + b.lat, 0) / areaMarkers.length;
       const lon = areaMarkers.reduce((a, b) => a + b.lon, 0) / areaMarkers.length;
@@ -300,7 +269,7 @@ export default function MapData() {
 
     const lat = selected.earthquake.hypocenter.latitude;
     const lon = selected.earthquake.hypocenter.longitude;
-    if (lat == null || lon == null) return null;
+    if (!lat || !lon) return null;
     return { lat, lon, zoom: 8 };
   }, [selected, areaMarkers]);
 
@@ -325,7 +294,6 @@ export default function MapData() {
 
         {flyTarget && <FlyTo lat={flyTarget.lat} lon={flyTarget.lon} zoom={flyTarget.zoom} />}
 
-        {/* 震源 */}
         {selected && selected.earthquake.hypocenter.latitude && selected.earthquake.hypocenter.longitude && (
           <Marker
             position={[selected.earthquake.hypocenter.latitude, selected.earthquake.hypocenter.longitude]}
@@ -351,7 +319,6 @@ export default function MapData() {
           />
         ))}
 
-        {/* 地域（震度速報：地区ごとに1つ） */}
         {areaMarkers.map((marker) => (
           <Marker
             key={marker.key}
