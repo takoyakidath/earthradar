@@ -1,7 +1,11 @@
 "use client";
-
-import { useEffect, useMemo, useState, useCallback } from "react";
-import { MapContainer, GeoJSON, Marker, Popup, useMap } from "react-leaflet";
+import { useEffect, useMemo, useState } from "react";
+import {
+  MapContainer,
+  GeoJSON,
+  Marker,
+  useMap,
+} from "react-leaflet";
 import L, { type StyleFunction } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type {
@@ -11,14 +15,13 @@ import type {
   GeoJsonProperties,
 } from "geojson";
 
-import { AreaName, AreaCode, centerPoint } from "./JMAPoints";
+import { AreaName, AreaCode } from "./JMAPoints";
 
 interface Earthquake {
   id: string;
-  issue?: { type?: string };
   earthquake: {
     time: string;
-    hypocenter: { latitude: number; longitude: number; name?: string; magnitude?: number; depth?: number };
+    hypocenter: { latitude: number; longitude: number };
     maxScale: number;
   };
   points: {
@@ -49,158 +52,94 @@ const shindoColorMap: Record<number, string> = {
   70: "rgb(150, 0, 150)",
 };
 
-const normalize = (s = "") => s.replace(/\s|　/g, "").trim();
+const normalize = (s: string) => s.replace(/\s|　/g, "").trim();
 
-function MapPanes() {
+const FlyToEpicenter = ({ lat, lon }: { lat: number; lon: number }) => {
   const map = useMap();
   useEffect(() => {
-    const setPane = (name: string, z: number) => {
-      const pane = map.getPane(name) ?? map.createPane(name);
-      pane.style.zIndex = String(z);
-    };
-
-    setPane("pane_map1", 1);
-    setPane("pane_map2", 2);
-    setPane("pane_map3", 3);
-    setPane("pane_map_filled", 5);
-
-    Object.keys(shindoColorMap)
-      .map((k) => Number(k))
-      .forEach((s) => setPane(`shindo${s}`, 600 + s));
-
-    setPane("shingen", 1000);
-    setPane("tsunami_map", 1010);
-  }, [map]);
+    map.flyTo([lat, lon], 7, { duration: 1.5 });
+  }, [lat, lon, map]);
   return null;
-}
-
-function FlyTo({ lat, lon, zoom = 8 }: { lat: number; lon: number; zoom?: number }) {
-  const map = useMap();
-  useEffect(() => {
-    map.flyTo([lat, lon], zoom, { duration: 0.6 });
-  }, [lat, lon, zoom, map]);
-  return null;
-}
-
-const iconNameByScale: Record<number, string> = {
-  10: "int1",
-  20: "int2",
-  30: "int3",
-  40: "int4",
-  45: "int50",
-  46: "int_",
-  50: "int55",
-  55: "int60",
-  60: "int65",
-  70: "int7",
 };
 
-const getShindoIcon = (scale: number): L.Icon => {
-  const url = `/intensity/jqk_${iconNameByScale[scale] ?? "int_"}.png`;
-  if (typeof window !== "undefined") console.debug("getShindoIcon:", scale, url);
-  return L.icon({
-    iconUrl: url,
+const getShindoIcon = (scale: number): L.Icon =>
+  L.icon({
+    iconUrl: `/intensity/jqk_${{
+      10: "int1",
+      20: "int2",
+      30: "int3",
+      40: "int4",
+      45: "int50",
+      46: "int_",
+      50: "int55",
+      55: "int60",
+      60: "int65",
+      70: "int7",
+    }[scale] ?? "int_"}.png`,
     iconSize: [24, 24],
     iconAnchor: [12, 12],
-    popupAnchor: [0, -18],
+    popupAnchor: [0, -20],
   });
-};
-
-const formatMap: Record<number, string> = {
-  10: "1",
-  20: "2",
-  30: "3",
-  40: "4",
-  45: "5弱",
-  46: "5弱以上(推定)",
-  50: "5強",
-  55: "6弱",
-  60: "6強",
-  70: "7",
-};
-
-function formatMaxScale(s: number) {
-  return formatMap[s] ?? "不明";
-}
 
 export default function MapData() {
-  const [geoData, setGeoData] =
-    useState<FeatureCollection<Geometry, GeoJsonProperties> | null>(null);
+  const [geoData, setGeoData] = useState<FeatureCollection<Geometry, GeoJsonProperties> | null>(null);
   const [stations, setStations] = useState<JMAStation[]>([]);
-  const [earthquakes, setEarthquakes] = useState<Earthquake[]>([]);
-  const [selectedEarthquakeIndex, setSelectedEarthquakeIndex] = useState(0);
-
-  const [filledAreaScales, setFilledAreaScales] = useState<Record<number, number>>({});
-
-  const selected = earthquakes[selectedEarthquakeIndex] ?? null;
-
-  const stationByName = useMemo(() => {
-    const stationMap = new Map<string, JMAStation>();
-    for (const s of stations) stationMap.set(normalize(s.name), s);
-    return stationMap;
-  }, [stations]);
+  const [earthquake, setEarthquake] = useState<Earthquake | null>(null);
+  const [filledMap, setFilledMap] = useState<Record<number, number>>({});
 
   useEffect(() => {
-    (async () => {
-      const [geoJson, stationsData] = await Promise.all([
-        fetch("/geojson/zone.geojson").then((r) => r.json()),
-        fetch("/coordinate/JMAstations.json").then((r) => r.json()),
+    const loadData = async () => {
+      const [geoJson, stationJson] = await Promise.all([
+        fetch("/geojson/zone.geojson").then((res) => res.json()),
+        fetch("/coordinate/JMAstations.json").then((res) => res.json()),
       ]);
-      const withIdx = {
-        ...geoJson,
-        features: geoJson.features.map((f: Feature<Geometry, GeoJsonProperties>, i: number) => ({
-          ...f,
-          properties: { ...(f.properties ?? {}), __idx: i },
-        })),
-      } as FeatureCollection<Geometry, GeoJsonProperties>;
-
-      setGeoData(withIdx);
-      setStations(stationsData);
-    })();
-  }, []);
-
-  const fetchEarthquakes = useCallback(async (limit = 20) => {
-    const res = await fetch(`/api/earthquakes?limit=${limit}`, { cache: "no-store" });
-    const data: Earthquake[] = await res.json();
-    setEarthquakes(data);
-    setSelectedEarthquakeIndex(0);
+      setGeoData(geoJson as FeatureCollection<Geometry, GeoJsonProperties>);
+      setStations(stationJson);
+    };
+    loadData();
   }, []);
 
   useEffect(() => {
-    fetchEarthquakes(20);
-    const id = setInterval(() => fetchEarthquakes(20), 10000);
-    return () => clearInterval(id);
-  }, [fetchEarthquakes]);
+    if (!geoData) return;
 
-  useEffect(() => {
-    if (!selected) return;
+    const fetchEarthquake = async () => {
+      const res = await fetch("/api/earthquakes");
+      const data: Earthquake[] = await res.json();
+      const latest = data
+        .filter((d) => d?.earthquake?.hypocenter?.latitude)
+        .sort(
+          (a, b) =>
+            new Date(b.earthquake.time).getTime() -
+            new Date(a.earthquake.time).getTime()
+        )[0];
 
-    const areaScaleMap: Record<number, number> = {};
+      if (!latest) return;
+      setEarthquake(latest);
 
-    const isScalePrompt = selected.issue?.type === "ScalePrompt";
+      const tmp: Record<number, number> = {};
+      for (const p of latest.points) {
+        if (p.isArea) continue;
+        const station = stations.find(
+          (s) => normalize(s.name) === normalize(p.addr)
+        );
+        if (!station?.area?.name) continue;
 
-    for (const point of selected.points) {
-      if (isScalePrompt) {
-        const areaIndex = AreaName.findIndex((n) => normalize(n) === normalize(point.addr));
-        if (areaIndex === -1) continue;
-        const code = AreaCode[areaIndex];
-        if (!areaScaleMap[code] || areaScaleMap[code] < point.scale) areaScaleMap[code] = point.scale;
-        continue;
+        const idx = AreaName.findIndex(
+          (n) => normalize(n) === normalize(station.area.name)
+        );
+        if (idx === -1) continue;
+
+        const code = AreaCode[idx];
+        if (!tmp[code] || tmp[code] < p.scale) tmp[code] = p.scale;
       }
 
-      if (point.isArea) continue;
-      const station = stationByName.get(normalize(point.addr));
-      if (!station?.area?.name) continue;
+      setFilledMap(tmp);
+    };
 
-      const areaIndex = AreaName.findIndex((n) => normalize(n) === normalize(station.area.name));
-      if (areaIndex === -1) continue;
-
-      const code = AreaCode[areaIndex];
-      if (!areaScaleMap[code] || areaScaleMap[code] < point.scale) areaScaleMap[code] = point.scale;
-    }
-
-    setFilledAreaScales(areaScaleMap);
-  }, [selected, stationByName]);
+    fetchEarthquake();
+    const id = setInterval(fetchEarthquake, 10000);
+    return () => clearInterval(id);
+  }, [geoData, stations]);
 
   const epicenterIcon = useMemo(
     () =>
@@ -208,127 +147,78 @@ export default function MapData() {
         iconUrl: "/epicenter.png",
         iconSize: [40, 40],
         iconAnchor: [20, 20],
-        popupAnchor: [0, -28],
+        popupAnchor: [0, -30],
       }),
     []
   );
 
-  const polygonStyle: StyleFunction<Feature<Geometry, GeoJsonProperties>> = (feature) => {
-    const props = feature?.properties as Record<string, unknown> | undefined;
-    const featureIndex = (props && (props.__idx as number | undefined)) ?? undefined;
-    const areaCode = typeof featureIndex === "number" ? AreaCode[featureIndex] : undefined;
-    const scale = areaCode ? filledAreaScales[areaCode] : undefined;
+  const polygonStyle: StyleFunction<Feature<Geometry, GeoJsonProperties>> = (
+    feature
+  ) => {
+    if (!feature || !geoData) {
+      return {
+        color: "#fff",
+        weight: 1.5,
+        opacity: 1,
+        fillColor: "#3a3a3a",
+        fillOpacity: 1,
+      };
+    }
+
+    const idx = geoData.features.findIndex(
+      (f) =>
+        JSON.stringify(f.properties) === JSON.stringify(feature.properties)
+    );
+    const areaCode = idx !== -1 ? AreaCode[idx] : undefined;
+    const scale = areaCode ? filledMap[areaCode] : undefined;
 
     return {
-      color: "#ffffff",
-      weight: 1.2,
+      color: "#fff",
+      weight: 1.5,
       opacity: 1,
       fillColor: scale ? shindoColorMap[scale] : "#3a3a3a",
       fillOpacity: 1,
     };
   };
 
-  const areaMarkers = useMemo(() => {
-    if (!selected) return [];
-    if (selected.issue?.type !== "ScalePrompt") return [];
-
-    return selected.points
-      .map((point, i) => {
-        const areaIndex = AreaName.findIndex((n) => normalize(n) === normalize(point.addr));
-        if (areaIndex === -1) return null;
-        const code = AreaCode[areaIndex];
-        const center = centerPoint[String(code) as keyof typeof centerPoint];
-        if (!center) return null;
-        return { key: `area-${i}`, lat: center.lat, lon: center.lng, scale: point.scale, name: point.addr };
-      })
-      .filter(Boolean) as { key: string; lat: number; lon: number; scale: number; name: string }[];
-  }, [selected]);
-
-  const stationMarkers = useMemo(() => {
-    if (!selected) return [];
-    if (selected.issue?.type === "ScalePrompt") return [];
-
-    return selected.points
-      .map((point, i) => {
-        if (point.isArea) return null;
-        const station = stationByName.get(normalize(point.addr));
-        if (!station) return null;
-        return { key: `pt-${i}`, lat: station.lat, lon: station.lon, scale: point.scale, name: point.addr };
-      })
-      .filter(Boolean) as { key: string; lat: number; lon: number; scale: number; name: string }[];
-  }, [selected, stationByName]);
-
-  const flyTarget = useMemo(() => {
-    if (!selected) return null;
-
-    if (selected.issue?.type === "ScalePrompt" && areaMarkers.length) {
-      const lat = areaMarkers.reduce((a, b) => a + b.lat, 0) / areaMarkers.length;
-      const lon = areaMarkers.reduce((a, b) => a + b.lon, 0) / areaMarkers.length;
-      return { lat, lon, zoom: 7 };
-    }
-
-    const lat = selected.earthquake.hypocenter.latitude;
-    const lon = selected.earthquake.hypocenter.longitude;
-    if (!lat || !lon) return null;
-    return { lat, lon, zoom: 8 };
-  }, [selected, areaMarkers]);
-
   return (
-    <div className="w-full h-screen bg-[#1d1d1d] relative">
-
+    <div className="w-full h-screen bg-[#1d1d1d]">
       <MapContainer
         center={[36.575, 137.984]}
         zoom={6}
         scrollWheelZoom
         style={{ height: "100%", width: "100%" }}
       >
-        <MapPanes />
-
-        {geoData && (
-          <GeoJSON
-            data={geoData}
-            style={polygonStyle}
-            pane="pane_map_filled"
-          />
+        {geoData && <GeoJSON data={geoData} style={polygonStyle} />}
+        {earthquake && (
+          <>
+            <FlyToEpicenter
+              lat={earthquake.earthquake.hypocenter.latitude}
+              lon={earthquake.earthquake.hypocenter.longitude}
+            />
+            <Marker
+              position={[
+                earthquake.earthquake.hypocenter.latitude,
+                earthquake.earthquake.hypocenter.longitude,
+              ]}
+              icon={epicenterIcon}
+            />
+            {earthquake.points.map((p, i) => {
+              if (p.isArea) return null;
+              const station = stations.find(
+                (s) => normalize(s.name) === normalize(p.addr)
+              );
+              if (!station) return null;
+              return (
+                <Marker
+                  key={`pt-${i}`}
+                  position={[station.lat, station.lon]}
+                  icon={getShindoIcon(p.scale)}
+                />
+              );
+            })}
+          </>
         )}
-
-        {flyTarget && <FlyTo lat={flyTarget.lat} lon={flyTarget.lon} zoom={flyTarget.zoom} />}
-
-        {selected && selected.earthquake.hypocenter.latitude && selected.earthquake.hypocenter.longitude && (
-          <Marker
-            position={[selected.earthquake.hypocenter.latitude, selected.earthquake.hypocenter.longitude]}
-            icon={epicenterIcon}
-            pane="shingen"
-          >
-            <Popup>
-              <div className="text-sm">
-                <div>発生: {selected.earthquake.time}</div>
-                <div>最大震度: {formatMaxScale(selected.earthquake.maxScale)}</div>
-              </div>
-            </Popup>
-          </Marker>
-        )}
-
-        {/* 観測点（通常） */}
-        {stationMarkers.map((marker) => (
-          <Marker
-            key={marker.key}
-            position={[marker.lat, marker.lon]}
-            icon={getShindoIcon(marker.scale)}
-            pane="markerPane"
-          />
-        ))}
-
-        {areaMarkers.map((marker) => (
-          <Marker
-            key={marker.key}
-            position={[marker.lat, marker.lon]}
-            icon={getShindoIcon(marker.scale)}
-            pane="markerPane"
-          >
-            <Popup>{marker.name} / 震度 {formatMaxScale(marker.scale)}</Popup>
-          </Marker>
-        ))}
       </MapContainer>
     </div>
   );
