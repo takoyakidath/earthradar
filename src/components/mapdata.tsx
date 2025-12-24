@@ -11,7 +11,7 @@ import type {
   GeoJsonProperties,
 } from "geojson";
 
-import { AreaName, AreaCode,centerPoint } from "./JMAPoints";
+import { AreaName, AreaCode, centerPoint } from "./JMAPoints";
 
 interface Earthquake {
   id: string;
@@ -105,9 +105,6 @@ const getShindoIcon = (scale: number): L.Icon => {
   const cached = _shindoIconCache.get(key);
   if (cached) return cached;
   const url = `/intensity/jqk_${iconNameByScale[scale] ?? "int_"}.png`;
-  if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
-    console.debug("getShindoIcon:", scale, url);
-  }
   const icon = L.icon({
     iconUrl: url,
     iconSize: [24, 24],
@@ -244,20 +241,36 @@ export default function MapData() {
     };
   };
 
+  // --- ここを改良: 震度速報（ScalePrompt）は地区ごとに集約して1つだけマーカーを作成する ---
   const areaMarkers = useMemo(() => {
     if (!selected) return [];
     if (selected.issue?.type !== "ScalePrompt") return [];
 
-    return selected.points
-      .map((point, i) => {
-        const areaIndex = AreaName.findIndex((n) => normalize(n) === normalize(point.addr));
-        if (areaIndex === -1) return null;
-        const code = AreaCode[areaIndex];
-        const center = centerPoint[String(code) as keyof typeof centerPoint];
-        if (!center) return null;
-        return { key: `area-${i}`, lat: center.lat, lon: center.lng, scale: point.scale, name: point.addr };
-      })
-      .filter(Boolean) as { key: string; lat: number; lon: number; scale: number; name: string }[];
+    // areaCode -> { scale, name }
+    const aggregated: Record<number, { scale: number; name: string }> = {};
+
+    for (const point of selected.points) {
+      const areaIndex = AreaName.findIndex((n) => normalize(n) === normalize(point.addr));
+      if (areaIndex === -1) continue;
+      const code = AreaCode[areaIndex];
+      const name = AreaName[areaIndex] ?? point.addr;
+      if (!aggregated[code] || aggregated[code].scale < point.scale) {
+        aggregated[code] = { scale: point.scale, name };
+      }
+    }
+
+    return Object.entries(aggregated).map(([codeStr, info]) => {
+      const code = Number(codeStr);
+      const center = centerPoint[String(code) as keyof typeof centerPoint] as { lat: number; lng: number } | undefined;
+      if (!center) return null;
+      return {
+        key: `area-${code}`,
+        lat: center.lat,
+        lon: center.lng,
+        scale: info.scale,
+        name: info.name,
+      };
+    }).filter(Boolean) as { key: string; lat: number; lon: number; scale: number; name: string }[];
   }, [selected]);
 
   // 通常のとき：観測点にアイコンを置く
@@ -278,7 +291,7 @@ export default function MapData() {
   const flyTarget = useMemo(() => {
     if (!selected) return null;
 
-    // ScalePrompt のときは中心点平均で飛ぶ（元の latList/lonList 相当）
+    // ScalePrompt のときは中心点平均で飛ぶ（集約後の areaMarkers を使用）
     if (selected.issue?.type === "ScalePrompt" && areaMarkers.length) {
       const lat = areaMarkers.reduce((a, b) => a + b.lat, 0) / areaMarkers.length;
       const lon = areaMarkers.reduce((a, b) => a + b.lon, 0) / areaMarkers.length;
@@ -287,7 +300,6 @@ export default function MapData() {
 
     const lat = selected.earthquake.hypocenter.latitude;
     const lon = selected.earthquake.hypocenter.longitude;
-    // 0 を正当値として扱うため、null/undefined のみチェック
     if (lat == null || lon == null) return null;
     return { lat, lon, zoom: 8 };
   }, [selected, areaMarkers]);
@@ -313,7 +325,7 @@ export default function MapData() {
 
         {flyTarget && <FlyTo lat={flyTarget.lat} lon={flyTarget.lon} zoom={flyTarget.zoom} />}
 
-        {/* 震源（ScalePromptでも一応表示したいならここ） */}
+        {/* 震源 */}
         {selected && selected.earthquake.hypocenter.latitude && selected.earthquake.hypocenter.longitude && (
           <Marker
             position={[selected.earthquake.hypocenter.latitude, selected.earthquake.hypocenter.longitude]}
@@ -339,7 +351,7 @@ export default function MapData() {
           />
         ))}
 
-        {/* 地域（震度速報） */}
+        {/* 地域（震度速報：地区ごとに1つ） */}
         {areaMarkers.map((marker) => (
           <Marker
             key={marker.key}
