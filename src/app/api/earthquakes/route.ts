@@ -1,44 +1,14 @@
 import { NextResponse } from 'next/server';
+import type { ApiEarthquakeEntry, ValidEarthquakeEntry } from '@/types';
+
 export const dynamic = 'force-dynamic';
 
-interface Hypocenter {
-  latitude: number;
-  longitude: number;
-  depth: number;
-  magnitude: number;
-  name: string;
-}
-
-interface Earthquake {
-  time: string;
-  hypocenter?: Hypocenter;
-  maxScale: number;
-}
-
-interface Point {
-  addr: string;
-  scale: number;
-  isArea: boolean;
-}
-
-interface RawEntry {
-  id: string;
-  earthquake?: Earthquake;
-  points?: Point[];
-  [key: string]: unknown; // 他にもあるが使わないフィールドのため
-}
-
-interface ValidEntry extends RawEntry {
-  points: Point[];
-  earthquake: Earthquake;
-}
-
 export async function GET() {
-  const res = await fetch("https://api.p2pquake.net/v2/history?codes=551");
-  const data: RawEntry[] = await res.json();
+  const res = await fetch("https://api-v2-sandbox.p2pquake.net/v2/history?codes=551");
+  const data: ApiEarthquakeEntry[] = await res.json();
 
   const filtered = data
-    .map((entry): ValidEntry | null => {
+    .map((entry): ValidEarthquakeEntry | null => {
       const lat = entry.earthquake?.hypocenter?.latitude;
       const lon = entry.earthquake?.hypocenter?.longitude;
 
@@ -47,15 +17,15 @@ export async function GET() {
         lat < -90 || lat > 90 || lon < -180 || lon > 180
       ) return null;
 
-      const validPoints = (entry.points || []).filter((p): p is Point => p.scale > 0);
+      const validPoints = (entry.points || []).filter((p) => p.scale > 0);
       if (validPoints.length === 0) return null;
 
       return {
         ...entry,
         points: validPoints,
-      } as ValidEntry;
+      } as ValidEarthquakeEntry;
     })
-    .filter((entry): entry is ValidEntry => entry !== null);
+    .filter((entry): entry is ValidEarthquakeEntry => entry !== null);
 
   return NextResponse.json(filtered);
 }

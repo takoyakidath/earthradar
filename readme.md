@@ -7,3 +7,6 @@
 - isualization of earthquake observation points
 # License
 This project is licensed under the MIT License.
+# Link
+https://earthrader.pkopko.jp/
+

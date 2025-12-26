@@ -16,43 +16,9 @@ import type {
 } from "geojson";
 
 import { AreaName, AreaCode } from "./JMAPoints";
-
-interface Earthquake {
-  id: string;
-  earthquake: {
-    time: string;
-    hypocenter: { latitude: number; longitude: number };
-    maxScale: number;
-  };
-  points: {
-    addr: string;
-    scale: number;
-    isArea: boolean;
-  }[];
-}
-
-interface JMAStation {
-  name: string;
-  lat: number;
-  lon: number;
-  furigana: string;
-  area: { name: string };
-}
-
-const shindoColorMap: Record<number, string> = {
-  10: "rgb(107, 120, 120)",
-  20: "rgb(30, 110, 230)",
-  30: "rgb(0, 200, 200)",
-  40: "rgb(250, 250, 100)",
-  45: "rgb(255, 180, 0)",
-  46: "rgb(255, 180, 0)",
-  50: "rgb(255, 120, 0)",
-  55: "rgb(230, 0, 0)",
-  60: "rgb(160, 0, 0)",
-  70: "rgb(150, 0, 150)",
-};
-
-const normalize = (s: string) => s.replace(/\s|　/g, "").trim();
+import type { MapEarthquake, JMAStation } from "@/types";
+import { normalize } from "@/utils";
+import { shindoColorMap, shindoIconMap, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "@/constants";
 
 const FlyToEpicenter = ({ lat, lon }: { lat: number; lon: number }) => {
   const map = useMap();
@@ -64,18 +30,7 @@ const FlyToEpicenter = ({ lat, lon }: { lat: number; lon: number }) => {
 
 const getShindoIcon = (scale: number): L.Icon =>
   L.icon({
-    iconUrl: `/intensity/jqk_${{
-      10: "int1",
-      20: "int2",
-      30: "int3",
-      40: "int4",
-      45: "int50",
-      46: "int_",
-      50: "int55",
-      55: "int60",
-      60: "int65",
-      70: "int7",
-    }[scale] ?? "int_"}.png`,
+    iconUrl: `/intensity/jqk_${shindoIconMap[scale] ?? "int_"}.png`,
     iconSize: [24, 24],
     iconAnchor: [12, 12],
     popupAnchor: [0, -20],
@@ -84,7 +39,7 @@ const getShindoIcon = (scale: number): L.Icon =>
 export default function MapData() {
   const [geoData, setGeoData] = useState<FeatureCollection<Geometry, GeoJsonProperties> | null>(null);
   const [stations, setStations] = useState<JMAStation[]>([]);
-  const [earthquake, setEarthquake] = useState<Earthquake | null>(null);
+  const [earthquake, setEarthquake] = useState<MapEarthquake | null>(null);
   const [filledMap, setFilledMap] = useState<Record<number, number>>({});
 
   useEffect(() => {
@@ -104,7 +59,7 @@ export default function MapData() {
 
     const fetchEarthquake = async () => {
       const res = await fetch("/api/earthquakes");
-      const data: Earthquake[] = await res.json();
+      const data: MapEarthquake[] = await res.json();
       const latest = data
         .filter((d) => d?.earthquake?.hypocenter?.latitude)
         .sort(
@@ -184,8 +139,8 @@ export default function MapData() {
   return (
     <div className="w-full h-screen bg-[#1d1d1d]">
       <MapContainer
-        center={[36.575, 137.984]}
-        zoom={6}
+        center={DEFAULT_MAP_CENTER}
+        zoom={DEFAULT_MAP_ZOOM}
         scrollWheelZoom
         style={{ height: "100%", width: "100%" }}
       >
