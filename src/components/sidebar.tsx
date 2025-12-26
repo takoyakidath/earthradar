@@ -2,30 +2,10 @@
 
 import { useEffect, useState, ReactNode } from 'react';
 import Earthquake from './earthquake';
+import type { ApiEarthquakeEntry } from '@/types';
+import { convertToCardData } from '@/utils';
 
-interface EarthquakeData {
-  id: string;
-  date: string;
-  location: string;
-  magnitude: number;
-  depth: number;
-  intensity?: string;
-  tsunami: boolean;
-}
-
-interface ApiEarthquakeEntry {
-  id: string;
-  earthquake: {
-    time: string;
-    hypocenter: {
-      name?: string;
-      magnitude: number;
-      depth: number;
-    } | null;
-    maxScale: number;
-    domesticTsunami: string;
-  };
-}
+import type { EarthquakeData } from '@/types';
 
 export default function Sidebar({ children }: { children: ReactNode }) {
   const [earthquakes, setEarthquakes] = useState<EarthquakeData[]>([]);
@@ -70,30 +50,3 @@ export default function Sidebar({ children }: { children: ReactNode }) {
   );
 }
 
-function convertToCardData(entry: ApiEarthquakeEntry): EarthquakeData {
-  return {
-    id: entry.id,
-    date: entry.earthquake.time,
-    location: entry.earthquake.hypocenter?.name ?? '不明',
-    magnitude: entry.earthquake.hypocenter?.magnitude ?? 0,
-    depth: entry.earthquake.hypocenter?.depth ?? 0,
-    intensity: convertMaxScaleToText(entry.earthquake.maxScale),
-    tsunami:
-      entry.earthquake.domesticTsunami === 'Warning' ||
-      entry.earthquake.domesticTsunami === 'Watch',
-  };
-}
-function convertMaxScaleToText(scale: number): string | undefined {
-  const map: Record<number, string> = {
-    10: '震度1',
-    20: '震度2',
-    30: '震度3',
-    40: '震度4',
-    50: '震度5弱',
-    55: '震度5強',
-    60: '震度6弱',
-    65: '震度6強',
-    70: '震度7',
-  };
-  return map[scale];
-}

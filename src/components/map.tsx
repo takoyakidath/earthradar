@@ -1,12 +1,16 @@
-"use client"
+"use client";
 import dynamic from "next/dynamic";
-import React from "react";
+import { useMemo } from "react";
 
-export default function MapPage() {
-  const MapData = React.useMemo(
+export default function Map() {
+  const MapData = useMemo(
     () =>
-      dynamic(() => import("../components/mapdata"), {
-        loading: () => <p>A map is loading</p>,
+      dynamic(() => import("./mapdata"), {
+        loading: () => (
+          <div className="flex items-center justify-center h-screen bg-[#1d1d1d] text-white">
+            <p>地図を読み込んでいます...</p>
+          </div>
+        ),
         ssr: false,
       }),
     []
