@@ -12,6 +12,7 @@ export interface Earthquake {
   time: string;
   hypocenter?: Hypocenter | null;
   maxScale: number;
+  domesticTsunami?: string;
 }
 
 export interface Point {
