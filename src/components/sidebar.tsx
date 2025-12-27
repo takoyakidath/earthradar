@@ -34,7 +34,7 @@ export default function Sidebar({ children }: { children: ReactNode }) {
     <div className="flex">
       <aside className="w-64 h-screen bg-gray-800 text-white flex flex-col">
         <div className="p-4 text-xl font-bold border-b border-gray-700">
-          EarthRader Dev
+          EarthRader
         </div>
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
           {earthquakes.map((eq) => (
@@ -42,7 +42,7 @@ export default function Sidebar({ children }: { children: ReactNode }) {
           ))}
         </nav>
         <footer className="p-4 border-t border-gray-700 text-sm text-gray-400">
-          &copy; 2025 EarthRader Dev
+          &copy; 2025 EarthRader
         </footer>
       </aside>
       <main className="flex-1">{children}</main>
