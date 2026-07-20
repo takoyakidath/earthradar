@@ -27,7 +27,12 @@ export const fetchHistory = async ({
   timeoutMs = DEFAULT_TIMEOUT_MS,
   retries = DEFAULT_RETRIES,
 }: FetchHistoryOptions = {}): Promise<P2PQuakeMessage[]> => {
-  const url = `${HISTORY_URL}?codes=${codes.join(",")}&limit=${limit}`;
+  // P2PQuake は codes を配列パラメータとして期待する (codes=551&codes=552...)。
+  // カンマ区切り (codes=551,552) は 400 Bad Request になる(実機で確認済み)。
+  const params = new URLSearchParams();
+  for (const code of codes) params.append("codes", String(code));
+  params.set("limit", String(limit));
+  const url = `${HISTORY_URL}?${params.toString()}`;
   let lastError: unknown;
 
   for (let attempt = 0; attempt <= retries; attempt++) {
