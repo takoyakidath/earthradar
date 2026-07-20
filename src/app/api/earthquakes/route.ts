@@ -1,31 +1,22 @@
-import { NextResponse } from 'next/server';
-import type { ApiEarthquakeEntry, ValidEarthquakeEntry } from '@/types';
+import { NextResponse } from "next/server";
+import { fetchHistory, P2PQuakeFetchError } from "@/lib/p2pquake/rest";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const res = await fetch("https://api.p2pquake.net/v2/history?codes=551");
-  const data: ApiEarthquakeEntry[] = await res.json();
-
-  const filtered = data
-    .map((entry): ValidEarthquakeEntry | null => {
-      const lat = entry.earthquake?.hypocenter?.latitude;
-      const lon = entry.earthquake?.hypocenter?.longitude;
-
-      if (
-        typeof lat !== 'number' || typeof lon !== 'number' ||
-        lat < -90 || lat > 90 || lon < -180 || lon > 180
-      ) return null;
-
-      const validPoints = (entry.points || []).filter((p) => p.scale > 0);
-      if (validPoints.length === 0) return null;
-
-      return {
-        ...entry,
-        points: validPoints,
-      } as ValidEarthquakeEntry;
-    })
-    .filter((entry): entry is ValidEarthquakeEntry => entry !== null);
-
-  return NextResponse.json(filtered);
+  try {
+    const messages = await fetchHistory();
+    return NextResponse.json(messages, {
+      headers: {
+        "Cache-Control": "public, max-age=3, stale-while-revalidate=10",
+      },
+    });
+  } catch (error) {
+    const cause = error instanceof P2PQuakeFetchError ? error.cause : undefined;
+    console.error("[api/earthquakes] upstream fetch failed", error, cause);
+    return NextResponse.json(
+      { error: "地震情報の取得に失敗しました。しばらくしてから再度お試しください。" },
+      { status: 502 }
+    );
+  }
 }
