@@ -4,8 +4,8 @@ import "./globals.css";
 
 
 export const metadata: Metadata = {
-  title: "earthrader",
-  description: "Earthrader is a EarthQuake Monitoring System",
+  title: "EarthRadar",
+  description: "EarthRadar is a real-time earthquake monitoring system",
 };
 
 export default function RootLayout({
@@ -17,7 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         suppressHydrationWarning
-        className={`antialiased`}
+        className="antialiased"
       >
         {children}
         <Analytics />
