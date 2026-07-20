@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "leaflet": "^1.9.4",
     "next": "^15.5.20",
     "react": "19.1.0",
@@ -17,17 +18,17 @@
     "tailwind-scrollbar-hide": "^4.0.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.6",
-    "@tailwindcss/postcss": "^4.3.3",
+    "@eslint/eslintrc": "^3.3.5",
+    "@tailwindcss/postcss": "^4.2.2",
+    "@types/bun": "latest",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^20.19.43",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "eslint": "^9.39.5",
     "eslint-config-next": "15.4.1",
-    "tailwindcss": "^4.3.3",
-    "typescript": "^5.9.3",
-    "@types/bun": "latest"
+    "tailwindcss": "^4.2.2",
+    "typescript": "^5.9.3"
   },
   "optionalDependencies": {
     "@tailwindcss/oxide-linux-x64-gnu": "^4.3.3",
