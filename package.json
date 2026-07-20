@@ -10,27 +10,27 @@
   },
   "dependencies": {
     "leaflet": "^1.9.4",
-    "next": "^15.5.14",
+    "next": "^15.5.20",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-leaflet": "^5.0.0",
     "tailwind-scrollbar-hide": "^4.0.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.5",
-    "@tailwindcss/postcss": "^4.2.2",
+    "@eslint/eslintrc": "^3.3.6",
+    "@tailwindcss/postcss": "^4.3.3",
     "@types/leaflet": "^1.9.21",
-    "@types/node": "^20.19.37",
-    "@types/react": "^19.2.14",
+    "@types/node": "^20.19.43",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "eslint": "^9.39.4",
+    "eslint": "^9.39.5",
     "eslint-config-next": "15.4.1",
-    "tailwindcss": "^4.2.2",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3",
     "@types/bun": "latest"
   },
   "optionalDependencies": {
-    "@tailwindcss/oxide-linux-x64-gnu": "^4.2.2",
-    "lightningcss-linux-x64-gnu": "^1.32.0"
+    "@tailwindcss/oxide-linux-x64-gnu": "^4.3.3",
+    "lightningcss-linux-x64-gnu": "^1.33.0"
   }
 }
