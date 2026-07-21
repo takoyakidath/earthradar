@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { MapContainer, GeoJSON, Marker, useMap } from "react-leaflet";
+import { MapContainer, GeoJSON, Marker, Popup, useMap } from "react-leaflet";
 import L, { type StyleFunction } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { Feature, FeatureCollection, Geometry, GeoJsonProperties } from "geojson";
@@ -9,14 +9,10 @@ import type { Feature, FeatureCollection, Geometry, GeoJsonProperties } from "ge
 import { AreaName, AreaCode } from "./JMAPoints";
 import type { JMAStation } from "@/types";
 import { hasValidHypocenter } from "@/lib/p2pquake/guards";
-import { normalize } from "@/utils";
+import { normalize, convertMaxScaleToText } from "@/utils";
 import { useEarthquakeFeedContext } from "@/contexts/EarthquakeFeedProvider";
-import {
-  shindoColorMap,
-  shindoIconMap,
-  DEFAULT_MAP_CENTER,
-  DEFAULT_MAP_ZOOM,
-} from "@/constants";
+import { shindoColorMap, shindoIconMap, DEFAULT_MAP_CENTER, DEFAULT_MAP_ZOOM } from "@/constants";
+import { MapLegend } from "./MapLegend";
 
 const FlyToEpicenter = ({ lat, lon }: { lat: number; lon: number }) => {
   const map = useMap();
@@ -35,7 +31,7 @@ const DEFAULT_ICON_OPTIONS = {
 export default function MapData() {
   const [geoData, setGeoData] = useState<FeatureCollection<Geometry, GeoJsonProperties> | null>(null);
   const [stations, setStations] = useState<JMAStation[]>([]);
-  const { quakes } = useEarthquakeFeedContext();
+  const { quakes, selectedId } = useEarthquakeFeedContext();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -109,10 +105,23 @@ export default function MapData() {
     [quakes]
   );
 
+  const selectedQuake = useMemo(
+    () =>
+      selectedId
+        ? quakes.find(
+            (quake) => quake.id === selectedId && hasValidHypocenter(quake.earthquake.hypocenter)
+          )
+        : undefined,
+    [quakes, selectedId]
+  );
+
+  // サイドバーでカードを選択している間はその地震を表示、それ以外は最新の地震を表示する
+  const activeQuake = selectedQuake ?? latestQuake;
+
   const filledMap = useMemo(() => {
     const result: Record<number, number> = {};
-    if (!latestQuake) return result;
-    for (const point of latestQuake.points) {
+    if (!activeQuake) return result;
+    for (const point of activeQuake.points) {
       if (point.isArea) continue;
       const station = stationByNormalizedName.get(normalize(point.addr));
       if (!station?.area?.name) continue;
@@ -123,7 +132,7 @@ export default function MapData() {
       }
     }
     return result;
-  }, [latestQuake, stationByNormalizedName, areaCodeByNormalizedAreaName]);
+  }, [activeQuake, stationByNormalizedName, areaCodeByNormalizedAreaName]);
 
   const polygonStyle: StyleFunction<Feature<Geometry, GeoJsonProperties>> = (feature) => {
     const areaCode = feature ? areaCodeByFeature.get(feature) : undefined;
@@ -139,7 +148,7 @@ export default function MapData() {
   };
 
   return (
-    <div className="w-full h-screen bg-[#1d1d1d]">
+    <div className="relative h-full w-full bg-[#0c0f14]">
       <MapContainer
         center={DEFAULT_MAP_CENTER}
         zoom={DEFAULT_MAP_ZOOM}
@@ -147,20 +156,33 @@ export default function MapData() {
         style={{ height: "100%", width: "100%" }}
       >
         {geoData && <GeoJSON data={geoData} style={polygonStyle} />}
-        {latestQuake?.earthquake.hypocenter && (
+        {activeQuake?.earthquake.hypocenter && (
           <>
             <FlyToEpicenter
-              lat={latestQuake.earthquake.hypocenter.latitude}
-              lon={latestQuake.earthquake.hypocenter.longitude}
+              lat={activeQuake.earthquake.hypocenter.latitude}
+              lon={activeQuake.earthquake.hypocenter.longitude}
             />
             <Marker
               position={[
-                latestQuake.earthquake.hypocenter.latitude,
-                latestQuake.earthquake.hypocenter.longitude,
+                activeQuake.earthquake.hypocenter.latitude,
+                activeQuake.earthquake.hypocenter.longitude,
               ]}
               icon={epicenterIcon}
-            />
-            {latestQuake.points.map((point, i) => {
+            >
+              <Popup>
+                <div className="text-xs">
+                  <p className="font-semibold">{activeQuake.earthquake.hypocenter.name ?? "震源不明"}</p>
+                  <p className="tabular-nums">
+                    M{activeQuake.earthquake.hypocenter.magnitude} ／ 深さ{" "}
+                    {activeQuake.earthquake.hypocenter.depth}km
+                  </p>
+                  {convertMaxScaleToText(activeQuake.earthquake.maxScale) && (
+                    <p>最大 {convertMaxScaleToText(activeQuake.earthquake.maxScale)}</p>
+                  )}
+                </div>
+              </Popup>
+            </Marker>
+            {activeQuake.points.map((point, i) => {
               if (point.isArea) return null;
               const station = stationByNormalizedName.get(normalize(point.addr));
               if (!station) return null;
@@ -169,12 +191,21 @@ export default function MapData() {
                   key={`pt-${i}`}
                   position={[station.lat, station.lon]}
                   icon={getShindoIcon(point.scale)}
-                />
+                >
+                  <Popup>
+                    <div className="text-xs">
+                      <p className="font-semibold">{station.name}</p>
+                      <p>{convertMaxScaleToText(point.scale) ?? "震度不明"}</p>
+                    </div>
+                  </Popup>
+                </Marker>
               );
             })}
           </>
         )}
       </MapContainer>
+
+      <MapLegend />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import type { JMAQuakeMessage, EarthquakeData } from "@/types";
+import { SEVERITY_LEVELS, SEVERITY_UNKNOWN, type SeverityMeta } from "@/constants";
 
 /** 文字列から空白文字(全角・半角)を削除して正規化 */
 export const normalize = (s: string): string => s.replace(/\s|　/g, "").trim();
@@ -18,18 +19,30 @@ const maxScaleTextMap: Record<number, string> = {
 
 export const convertMaxScaleToText = (scale: number): string | undefined => maxScaleTextMap[scale];
 
-export const getColorByIntensity = (intensity?: string): string => {
-  if (!intensity) return "bg-gray-300";
-  if (intensity.includes("震度1")) return "bg-green-100";
-  if (intensity.includes("震度2")) return "bg-yellow-100";
-  if (intensity.includes("震度3")) return "bg-yellow-200";
-  if (intensity.includes("震度4")) return "bg-orange-200";
-  if (intensity.includes("震度5弱")) return "bg-orange-300";
-  if (intensity.includes("震度5強")) return "bg-red-300";
-  if (intensity.includes("震度6弱")) return "bg-red-400";
-  if (intensity.includes("震度6強")) return "bg-red-500";
-  if (intensity.includes("震度7")) return "bg-red-600";
-  return "bg-gray-300";
+/** 震度テキスト("震度5弱"など)から、地図と共通のカラースケール定義を引く */
+export const getSeverityMeta = (intensity?: string): SeverityMeta => {
+  if (!intensity) return SEVERITY_UNKNOWN;
+  const match = SEVERITY_LEVELS.find((level) => intensity.includes(level.label));
+  return match ?? SEVERITY_UNKNOWN;
+};
+
+/** 相対時刻表示("たった今" / "3分前" / "2時間前")。24時間以上前は絶対日時にフォールバック */
+export const formatRelativeTime = (iso: string, now: number = Date.now()): string => {
+  const then = new Date(iso).getTime();
+  if (Number.isNaN(then)) return "";
+  const diffSec = Math.max(0, Math.floor((now - then) / 1000));
+
+  if (diffSec < 60) return "たった今";
+  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}分前`;
+  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}時間前`;
+
+  return new Date(iso).toLocaleString("ja-JP", {
+    timeZone: "Asia/Tokyo",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 };
 
 export const convertToCardData = (message: JMAQuakeMessage): EarthquakeData => ({

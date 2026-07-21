@@ -15,7 +15,11 @@ export default function AlertBanners({
 }) {
   if (!eew && !tsunami) return null;
   return (
-    <div className="fixed top-0 inset-x-0 z-[1000] flex flex-col">
+    <div
+      className="fixed inset-x-0 top-0 z-(--z-alert) flex flex-col"
+      aria-live="assertive"
+      aria-atomic="false"
+    >
       <EewBanner eew={eew} onDismiss={onDismissEew} />
       <TsunamiBanner tsunami={tsunami} />
     </div>

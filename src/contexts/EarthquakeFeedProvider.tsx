@@ -1,9 +1,13 @@
 "use client";
 
 import { createContext, useContext, type ReactNode } from "react";
-import { useEarthquakeFeed, type EarthquakeFeedState } from "@/hooks/useEarthquakeFeed";
+import {
+  useEarthquakeFeed,
+  type EarthquakeFeedState,
+  type EarthquakeFeedActions,
+} from "@/hooks/useEarthquakeFeed";
 
-type EarthquakeFeedContextValue = EarthquakeFeedState & { dismissEew: () => void };
+type EarthquakeFeedContextValue = EarthquakeFeedState & EarthquakeFeedActions;
 
 const EarthquakeFeedContext = createContext<EarthquakeFeedContextValue | null>(null);
 

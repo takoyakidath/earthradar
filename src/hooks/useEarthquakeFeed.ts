@@ -13,6 +13,8 @@ export interface EarthquakeFeedState {
   latestEew: EewMessage | null;
   latestTsunami: JMATsunamiMessage | null;
   status: SocketStatus;
+  lastUpdatedAt: string | null;
+  selectedId: string | null;
 }
 
 const initialState: EarthquakeFeedState = {
@@ -20,27 +22,43 @@ const initialState: EarthquakeFeedState = {
   latestEew: null,
   latestTsunami: null,
   status: "connecting",
+  lastUpdatedAt: null,
+  selectedId: null,
 };
 
 /** 1件のメッセージを現在の状態にマージする(id で重複排除、最新順を維持) */
 const mergeMessage = (
   state: EarthquakeFeedState,
-  message: P2PQuakeMessage
+  message: P2PQuakeMessage,
+  receivedAt: string
 ): EarthquakeFeedState => {
   if (isJMAQuake(message)) {
     if (state.quakes.some((quake) => quake.id === message.id)) return state;
-    return { ...state, quakes: [message, ...state.quakes].slice(0, MAX_QUAKES_RETAINED) };
+    return {
+      ...state,
+      quakes: [message, ...state.quakes].slice(0, MAX_QUAKES_RETAINED),
+      lastUpdatedAt: receivedAt,
+    };
   }
   if (isEew(message)) {
-    return { ...state, latestEew: message.cancelled ? null : message };
+    return { ...state, latestEew: message.cancelled ? null : message, lastUpdatedAt: receivedAt };
   }
   if (isJMATsunami(message)) {
-    return { ...state, latestTsunami: message.cancelled ? null : message };
+    return {
+      ...state,
+      latestTsunami: message.cancelled ? null : message,
+      lastUpdatedAt: receivedAt,
+    };
   }
   return state; // code 554 (EEW検出) は状態を持たない通知トリガーのため無視する
 };
 
-export const useEarthquakeFeed = (): EarthquakeFeedState & { dismissEew: () => void } => {
+export interface EarthquakeFeedActions {
+  dismissEew: () => void;
+  selectQuake: (id: string | null) => void;
+}
+
+export const useEarthquakeFeed = (): EarthquakeFeedState & EarthquakeFeedActions => {
   const [state, setState] = useState<EarthquakeFeedState>(initialState);
   const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -55,9 +73,10 @@ export const useEarthquakeFeed = (): EarthquakeFeedState & { dismissEew: () => v
 
       setState((prev) => {
         let next = prev;
+        const receivedAt = new Date().toISOString();
         // API は新しい順で返すため、prepend 型の mergeMessage で正しい順序になるよう古い順に処理する
         for (const message of [...messages].reverse()) {
-          next = mergeMessage(next, message);
+          next = mergeMessage(next, message, receivedAt);
         }
         return next;
       });
@@ -72,7 +91,8 @@ export const useEarthquakeFeed = (): EarthquakeFeedState & { dismissEew: () => v
     loadInitial(controller.signal);
 
     const socket = createP2PQuakeSocket({
-      onMessage: (message) => setState((prev) => mergeMessage(prev, message)),
+      onMessage: (message) =>
+        setState((prev) => mergeMessage(prev, message, new Date().toISOString())),
       onStatusChange: (status) => setState((prev) => ({ ...prev, status })),
     });
 
@@ -101,5 +121,9 @@ export const useEarthquakeFeed = (): EarthquakeFeedState & { dismissEew: () => v
     setState((prev) => ({ ...prev, latestEew: null }));
   }, []);
 
-  return { ...state, dismissEew };
+  const selectQuake = useCallback((id: string | null) => {
+    setState((prev) => ({ ...prev, selectedId: id }));
+  }, []);
+
+  return { ...state, dismissEew, selectQuake };
 };

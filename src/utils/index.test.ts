@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { convertMaxScaleToText, getColorByIntensity, convertToCardData, normalize } from "./index";
+import {
+  convertMaxScaleToText,
+  getSeverityMeta,
+  formatRelativeTime,
+  convertToCardData,
+  normalize,
+} from "./index";
 import type { JMAQuakeMessage } from "@/types";
 
 describe("convertMaxScaleToText", () => {
@@ -69,9 +75,30 @@ describe("convertToCardData", () => {
   });
 });
 
-describe("getColorByIntensity", () => {
-  it("returns a distinct background class per intensity band", () => {
-    expect(getColorByIntensity("震度5弱")).toBe("bg-orange-300");
-    expect(getColorByIntensity(undefined)).toBe("bg-gray-300");
+describe("getSeverityMeta", () => {
+  it("returns the shared color-scale entry matching the intensity label", () => {
+    expect(getSeverityMeta("震度5弱")).toMatchObject({ scale: 45, color: "rgb(255,180,0)" });
+    expect(getSeverityMeta("震度7")).toMatchObject({ scale: 70, color: "rgb(150,0,150)" });
+  });
+
+  it("falls back to a neutral entry when intensity is unknown", () => {
+    expect(getSeverityMeta(undefined)).toMatchObject({ scale: -1 });
+  });
+});
+
+describe("formatRelativeTime", () => {
+  const now = new Date("2026-01-01T12:00:00+09:00").getTime();
+
+  it("renders sub-minute gaps as たった今", () => {
+    expect(formatRelativeTime("2026-01-01T11:59:45+09:00", now)).toBe("たった今");
+  });
+
+  it("renders minute and hour gaps in Japanese units", () => {
+    expect(formatRelativeTime("2026-01-01T11:55:00+09:00", now)).toBe("5分前");
+    expect(formatRelativeTime("2026-01-01T09:00:00+09:00", now)).toBe("3時間前");
+  });
+
+  it("falls back to an absolute date beyond 24 hours", () => {
+    expect(formatRelativeTime("2025-12-30T12:00:00+09:00", now)).toContain("12/30");
   });
 });
