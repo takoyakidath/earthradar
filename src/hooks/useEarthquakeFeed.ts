@@ -4,9 +4,20 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { P2PQuakeMessage, JMAQuakeMessage, EewMessage, JMATsunamiMessage } from "@/types";
 import { isJMAQuake, isEew, isJMATsunami, parseP2PQuakeMessage } from "@/lib/p2pquake/guards";
 import { createP2PQuakeSocket, type SocketStatus } from "@/lib/p2pquake/socket";
+import {
+  initAlertSound,
+  playEewAlertSound,
+  playTsunamiAlertSound,
+  startEewAlarmLoop,
+} from "@/lib/alertSound";
 
 const FALLBACK_POLL_INTERVAL_MS = 5000;
 const MAX_QUAKES_RETAINED = 50;
+/** P2PQuake の scale 値。45 = 震度5弱(気象庁 maxScale enum) */
+const SEVERE_EEW_SCALE_THRESHOLD = 45;
+
+const getMaxScaleTo = (eew: EewMessage): number =>
+  eew.areas.reduce((max, area) => Math.max(max, area.scaleTo), -1);
 
 export interface EarthquakeFeedState {
   quakes: JMAQuakeMessage[];
@@ -61,6 +72,8 @@ export interface EarthquakeFeedActions {
 export const useEarthquakeFeed = (): EarthquakeFeedState & EarthquakeFeedActions => {
   const [state, setState] = useState<EarthquakeFeedState>(initialState);
   const pollTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const lastAnnouncedEewEventIdRef = useRef<string | null>(null);
+  const eewAlarmRef = useRef<{ stop: () => void; eventId: string } | null>(null);
 
   const loadInitial = useCallback(async (signal?: AbortSignal) => {
     try {
@@ -90,15 +103,29 @@ export const useEarthquakeFeed = (): EarthquakeFeedState & EarthquakeFeedActions
     const controller = new AbortController();
     loadInitial(controller.signal);
 
+    const stopAlertSoundInit = initAlertSound();
+
     const socket = createP2PQuakeSocket({
-      onMessage: (message) =>
-        setState((prev) => mergeMessage(prev, message, new Date().toISOString())),
+      onMessage: (message) => {
+        // 同じ地震の続報(serial違い)で毎回鳴らさないよう、eventId単位で1回だけ通知する
+        if (isEew(message) && !message.cancelled) {
+          const eventId = message.issue.eventId;
+          if (lastAnnouncedEewEventIdRef.current !== eventId) {
+            lastAnnouncedEewEventIdRef.current = eventId;
+            playEewAlertSound();
+          }
+        } else if (isJMATsunami(message) && !message.cancelled) {
+          playTsunamiAlertSound();
+        }
+        setState((prev) => mergeMessage(prev, message, new Date().toISOString()));
+      },
       onStatusChange: (status) => setState((prev) => ({ ...prev, status })),
     });
 
     return () => {
       controller.abort();
       socket.close();
+      stopAlertSoundInit();
     };
   }, [loadInitial]);
 
@@ -116,6 +143,25 @@ export const useEarthquakeFeed = (): EarthquakeFeedState & EarthquakeFeedActions
       }
     };
   }, [state.status, loadInitial]);
+
+  useEffect(() => {
+    const eew = state.latestEew;
+    // 震度5弱未満、またはEEWが消えた(取消/手動dismiss)場合は鳴らさない
+    if (!eew || getMaxScaleTo(eew) < SEVERE_EEW_SCALE_THRESHOLD) {
+      eewAlarmRef.current?.stop();
+      eewAlarmRef.current = null;
+      return;
+    }
+    // 同じ地震の続報(serial違い)で連打を再スタートしない
+    if (eewAlarmRef.current?.eventId === eew.issue.eventId) return;
+
+    eewAlarmRef.current?.stop();
+    eewAlarmRef.current = { stop: startEewAlarmLoop(), eventId: eew.issue.eventId };
+  }, [state.latestEew]);
+
+  useEffect(() => {
+    return () => eewAlarmRef.current?.stop();
+  }, []);
 
   const dismissEew = useCallback(() => {
     setState((prev) => ({ ...prev, latestEew: null }));
