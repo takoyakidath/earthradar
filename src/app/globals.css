@@ -1,1 +1,323 @@
 @import "tailwindcss";
+
+/* ==========================================================================
+   Design tokens
+   Semantic tokens are plain CSS custom properties so they can be swapped at
+   runtime by [data-theme]; @theme re-exposes them as Tailwind utilities
+   (bg-bg, text-text-primary, rounded-md, shadow-sm, ...) via var() so the
+   generated utility classes stay theme-aware instead of being baked in.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* --- surfaces & text (light) --- */
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-hover: #eef0f3;
+  --surface-sunken: #eceef2;
+  --border: #e3e5ea;
+  --border-strong: #cdd1d9;
+  --text-primary: #14161c;
+  --text-secondary: #565b68;
+  --text-tertiary: #8a8f9c;
+  --text-inverse: #f6f7f9;
+
+  /* --- brand & semantic --- */
+  --brand: #0891b2;
+  --brand-strong: #0e7490;
+  --brand-soft: #ecfeff;
+  --success: #059669;
+  --success-soft: #ecfdf5;
+  --warning: #b45309;
+  --warning-soft: #fffbeb;
+  --danger: #dc2626;
+  --danger-soft: #fef2f2;
+  --danger-strong: #991b1b;
+
+  /* --- elevation --- */
+  --shadow-color: 220 15% 40%;
+  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.08);
+  --shadow-md: 0 4px 12px hsl(var(--shadow-color) / 0.1), 0 1px 2px hsl(var(--shadow-color) / 0.06);
+  --shadow-lg: 0 12px 32px hsl(var(--shadow-color) / 0.14), 0 2px 6px hsl(var(--shadow-color) / 0.08);
+  --shadow-danger-glow: 0 0 0 1px rgba(220, 38, 38, 0.35), 0 8px 24px rgba(220, 38, 38, 0.25);
+
+  /* --- z-index scale --- */
+  --z-map: 0;
+  --z-map-control: 400;
+  --z-app-chrome: 500;
+  --z-alert: 1000;
+  --z-toast: 1100;
+
+  /* --- motion --- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 400ms;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #0a0c10;
+  --surface: #12151b;
+  --surface-raised: #171b23;
+  --surface-hover: #1d222c;
+  --surface-sunken: #0a0c10;
+  --border: #232833;
+  --border-strong: #323a48;
+  --text-primary: #eef1f6;
+  --text-secondary: #a2a9b8;
+  --text-tertiary: #6c7486;
+  --text-inverse: #0a0c10;
+
+  --brand: #22d3ee;
+  --brand-strong: #67e8f9;
+  --brand-soft: rgba(34, 211, 238, 0.12);
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.12);
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.12);
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.14);
+  --danger-strong: #fca5a5;
+
+  --shadow-color: 220 40% 2%;
+  --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.4);
+  --shadow-md: 0 4px 16px hsl(var(--shadow-color) / 0.5);
+  --shadow-lg: 0 16px 40px hsl(var(--shadow-color) / 0.6);
+  --shadow-danger-glow: 0 0 0 1px rgba(248, 113, 113, 0.4), 0 0 32px rgba(248, 113, 113, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #0a0c10;
+    --surface: #12151b;
+    --surface-raised: #171b23;
+    --surface-hover: #1d222c;
+    --surface-sunken: #0a0c10;
+    --border: #232833;
+    --border-strong: #323a48;
+    --text-primary: #eef1f6;
+    --text-secondary: #a2a9b8;
+    --text-tertiary: #6c7486;
+    --text-inverse: #0a0c10;
+
+    --brand: #22d3ee;
+    --brand-strong: #67e8f9;
+    --brand-soft: rgba(34, 211, 238, 0.12);
+    --success: #34d399;
+    --success-soft: rgba(52, 211, 153, 0.12);
+    --warning: #fbbf24;
+    --warning-soft: rgba(251, 191, 36, 0.12);
+    --danger: #f87171;
+    --danger-soft: rgba(248, 113, 113, 0.14);
+    --danger-strong: #fca5a5;
+
+    --shadow-color: 220 40% 2%;
+    --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.4);
+    --shadow-md: 0 4px 16px hsl(var(--shadow-color) / 0.5);
+    --shadow-lg: 0 16px 40px hsl(var(--shadow-color) / 0.6);
+    --shadow-danger-glow: 0 0 0 1px rgba(248, 113, 113, 0.4), 0 0 32px rgba(248, 113, 113, 0.25);
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-inter), "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic",
+    "Meiryo", system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-hover: var(--surface-hover);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-text-inverse: var(--text-inverse);
+
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-soft: var(--brand-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-danger-strong: var(--danger-strong);
+
+  --shadow-xs: var(--shadow-sm);
+  --shadow-card: var(--shadow-md);
+  --shadow-overlay: var(--shadow-lg);
+  --shadow-glow-danger: var(--shadow-danger-glow);
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  --animate-fade-in: fade-in var(--duration-base) var(--ease-out-expo);
+  --animate-slide-down: slide-down var(--duration-base) var(--ease-out-expo);
+  --animate-pulse-soft: pulse-soft 2.4s ease-in-out infinite;
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  --animate-radar-sweep: radar-sweep 1.8s linear infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes radar-sweep {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  background: var(--bg);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-feature-settings: "cv11", "tnum";
+}
+
+::selection {
+  background: var(--brand);
+  color: var(--text-inverse);
+}
+
+/* Consistent, always-visible keyboard focus ring across every interactive element. */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Tabular numerals for anything numeric (magnitude, depth, timestamps). */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Thin, theme-aware scrollbar instead of hiding scroll affordance entirely. */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-sunken) 25%,
+    var(--surface-hover) 37%,
+    var(--surface-sunken) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+/* Respect the user's OS-level reduced-motion preference everywhere. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Leaflet chrome re-themed to match the app rather than the library default. */
+.leaflet-container {
+  background: var(--surface-sunken);
+  font-family: var(--font-sans);
+}
+
+.leaflet-control-zoom a {
+  background-color: var(--surface-raised) !important;
+  color: var(--text-primary) !important;
+  border-color: var(--border) !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: var(--surface-hover) !important;
+}
+
+.leaflet-control-attribution {
+  background: color-mix(in srgb, var(--surface) 85%, transparent) !important;
+  color: var(--text-tertiary) !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--surface-raised);
+  color: var(--text-primary);
+}

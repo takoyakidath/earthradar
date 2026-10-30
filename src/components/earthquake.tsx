@@ -1,43 +1,82 @@
 import React from "react";
 import type { EarthquakeData } from "@/types";
-import { getColorByIntensity } from "@/utils";
+import { getSeverityMeta, formatRelativeTime } from "@/utils";
+import { SeverityBadge } from "./ui/badge";
+import { IconWaves } from "./ui/icons";
 
-const Earthquake: React.FC<{ data: EarthquakeData }> = ({ data }) => {
+const Earthquake: React.FC<{
+  data: EarthquakeData;
+  selected?: boolean;
+  onSelect?: (id: string) => void;
+}> = ({ data, selected = false, onSelect }) => {
+  const severity = getSeverityMeta(data.intensity);
+  const isMajor = severity.scale >= 45;
+
   const formattedDate = new Date(data.date).toLocaleString("ja-JP", {
     timeZone: "Asia/Tokyo",
-    year: "numeric",
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
   });
 
-  const bgColor = getColorByIntensity(data.intensity);
-
   return (
-    <div className={`${bgColor} rounded-xl shadow-md p-4 border ${data.tsunami ? "border-blue-500" : "border-gray-200"} relative`}>
-      {data.intensity && (
-        <div className="absolute bottom-2 right-2 bg-lime-600 text-white rounded-full w-10 h-10 flex items-center justify-center font-bold text-sm">
-          {data.intensity}
-        </div>
-      )}
-      <div className="text-sm text-gray-500 mb-1">{formattedDate}</div>
-      <div className="text-lg font-semibold text-gray-800">{data.location}</div>
-      <div className="mt-2 space-y-1 text-sm text-gray-700 pr-12">
-        <div>
-          <span className="font-medium">マグニチュード:</span> M{data.magnitude}
-        </div>
-        <div>
-          <span className="font-medium">深さ:</span> {data.depth}km
-        </div>
-        {data.tsunami && (
-          <div>
-            <span className="font-medium">津波:</span> あり
+    <button
+      type="button"
+      onClick={() => onSelect?.(data.id)}
+      aria-pressed={selected}
+      className={`group w-full rounded-lg border p-3.5 text-left transition-all duration-150
+        cursor-pointer
+        ${
+          selected
+            ? "border-brand bg-brand-soft shadow-xs"
+            : "border-border bg-surface hover:border-border-strong hover:bg-surface-hover"
+        }
+        ${isMajor ? "ring-1 ring-danger/30" : ""}`}
+    >
+      <div className="flex items-start gap-3">
+        <SeverityBadge
+          label={severity.short}
+          color={severity.color}
+          foreground={severity.foreground}
+          size={isMajor ? "lg" : "md"}
+        />
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <span className="truncate text-[13px] font-semibold text-text-primary">
+              {data.location}
+            </span>
+            <time
+              dateTime={data.date}
+              className="shrink-0 text-[11px] tabular-nums text-text-tertiary"
+              title={formattedDate}
+            >
+              {formatRelativeTime(data.date)}
+            </time>
           </div>
-        )}
+
+          <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-text-secondary tabular-nums">
+            <span>
+              M<span className="font-semibold text-text-primary">{data.magnitude || "―"}</span>
+            </span>
+            <span className="text-border-strong" aria-hidden>
+              /
+            </span>
+            <span>
+              深さ <span className="font-semibold text-text-primary">{data.depth}</span>km
+            </span>
+          </div>
+
+          {data.tsunami && (
+            <div className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-brand-soft px-2 py-0.5 text-[11px] font-medium text-brand-strong">
+              <IconWaves className="h-3.5 w-3.5" />
+              津波の可能性あり
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </button>
   );
 };
 
-export default Earthquake;
+export default React.memo(Earthquake);
